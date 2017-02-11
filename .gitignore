@@ -1,0 +1,49 @@
+# Misc
+temp/
+tmp/
+log/
+*.log
+*.tmp
+*.bak
+*.swp
+*.kate-swp
+*~
+
+# Java
+*.class
+*.jar
+
+#JRebel
+rebel.xml
+rebel-remote.xml
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.settings/
+.classpath
+.project
+
+# Build Tools
+bin/
+out/
+target/
+classes/
+git.properties
+
+# OS X
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/

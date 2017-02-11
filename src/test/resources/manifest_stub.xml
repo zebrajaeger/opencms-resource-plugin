@@ -1,0 +1,97 @@
+<export>
+    <info>
+        <creator>Admin</creator>
+        <opencms_version>10.0.1</opencms_version>
+        <createdate>${createdate}</createdate>
+        <infoproject>Offline</infoproject>
+        <export_version>10</export_version>
+    </info>
+    <module>
+        <name>foo</name>
+        <nicename><![CDATA[Foo OpenCms Basis Templates]]></nicename>
+        <group>foo</group>
+        <class>de.zebrajaeger.opencms.foo.ActionClass</class>
+        <export-mode name="default"/>
+        <description/>
+        <version>${moduleversion}</version>
+        <authorname><![CDATA[de.zebrajaeger]]></authorname>
+        <authoremail><![CDATA[info@zebrajaeger.de]]></authoremail>
+        <datecreated/>
+        <userinstalled/>
+        <dateinstalled/>
+        <dependencies/>
+        <exportpoints>
+            <exportpoint uri="/system/modules/de.zebrajaeger.foo/META-INF/foo.tld" destination="WEB-INF/foo.tld"/>
+            <exportpoint uri="/system/modules/de.zebrajaeger.foo/META-INF/template.tld" destination="WEB-INF/template.tld"/>
+            <exportpoint uri="/system/modules/de.zebrajaeger.foo/META-INF/tags/" destination="META-INF/tags/"/>
+            <exportpoint uri="/system/modules/de.zebrajaeger.foo/lib/" destination="WEB-INF/lib/"/>
+        </exportpoints>
+        <resources>
+            <resource uri="/system/modules/de.zebrajaeger.foo/"/>
+            <resource uri="/system/workplace/resources/filetypes/foo-default.png"/>
+            <resource uri="/system/workplace/resources/filetypes/foo-default-big.png"/>
+            <resource uri="/system/handler/"/>
+        </resources>
+        <excluderesources/>
+        <parameters/>
+        <resourcetypes>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="breadcrumb" id="100000">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/breadcrumb/breadcrumb.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="buehne" id="100001">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/buehne/buehne.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="generic-content" id="100002">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/generic-content/generic-content.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="leistungen-navi" id="100003">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/leistungen-navi/leistungen-navi.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="text-bild-info" id="100004">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/text-bild-info/text-bild-info.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="text-bild-teaser" id="100005">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/text-bild-teaser/text-bild-teaser.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="standortfinder" id="100006">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/standortfinder/standortfinder.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="sitemap" id="100007">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/sitemap/sitemap.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="footer" id="100012">
+                <param name="schema">/system/modules/de.zebrajaeger.foo/footer/footer.xsd</param>
+            </type>
+        </resourcetypes>
+        <explorertypes>
+            <explorertype name="breadcrumb" key="fileicon.breadcrumb" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=breadcrumb" order="10" autosetnavigation="false" autosettitle="false" info="desc.breadcrumb" key="title.breadcrumb"/>
+            </explorertype>
+            <explorertype name="buehne" key="fileicon.buehne" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=buehne" order="10" autosetnavigation="false" autosettitle="false" info="desc.buehne" key="title.buehne"/>
+            </explorertype>
+            <explorertype name="generic-content" key="fileicon.generic-content" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=generic-content" order="10" autosetnavigation="false" autosettitle="false" info="desc.generic-content" key="title.generic-content"/>
+            </explorertype>
+            <explorertype name="leistungen-navi" key="fileicon.leistungen-navi" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=leistungen-navi" order="10" autosetnavigation="false" autosettitle="false" info="desc.leistungen-navi" key="title.leistungen-navi"/>
+            </explorertype>
+            <explorertype name="text-bild-info" key="fileicon.text-bild-info" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=text-bild-info" order="10" autosetnavigation="false" autosettitle="false" info="desc.text-bild-info" key="title.text-bild-info"/>
+            </explorertype>
+            <explorertype name="text-bild-teaser" key="fileicon.text-bild-teaser" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=text-bild-teaser" order="10" autosetnavigation="false" autosettitle="false" info="desc.text-bild-teaser" key="title.text-bild-teaser"/>
+            </explorertype>
+            <explorertype name="standortfinder" key="fileicon.standortfinder" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=standortfinder" order="10" autosetnavigation="false" autosettitle="false" info="desc.standortfinder" key="title.standortfinder"/>
+            </explorertype>
+            <explorertype name="sitemap" key="fileicon.sitemap" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=sitemap" order="10" autosetnavigation="false" autosettitle="false" info="desc.sitemap" key="title.sitemap"/>
+            </explorertype>
+            <explorertype name="footer" key="fileicon.footer" icon="foo-default.png" bigicon="foo-default-big.png" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=footer" order="10" autosetnavigation="false" autosettitle="false" info="desc.footer" key="title.footer"/>
+            </explorertype>
+        </explorertypes>
+    </module>
+    <files/>
+</export>

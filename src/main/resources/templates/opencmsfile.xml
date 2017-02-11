@@ -1,0 +1,18 @@
+<fileinfo>
+    <file>
+        <source>${source}</source>
+        <destination>${destination}</destination>
+        <type>${type}</type>
+        <uuidstructure>${uuidstructure}</uuidstructure>
+        <uuidresource>${uuidresource}</uuidresource>
+        <datelastmodified>${datelastmodified}</datelastmodified>
+        <userlastmodified>Admin</userlastmodified>
+        <datecreated>${datecreated}</datecreated>
+        <usercreated>Admin</usercreated>
+        <flags>0</flags>
+        <properties/>
+        <relations/>
+        <accesscontrol/>
+    </file>
+    <siblingcount>1</siblingcount>
+</fileinfo>

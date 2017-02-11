@@ -1,0 +1,33 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+    <xsd:element name="${name}s" type="OpenCms${name}s"/>
+
+    <xsd:complexType name="OpenCms${name}s">
+        <xsd:sequence>
+            <xsd:element name="${name}" type="OpenCms${name}" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCms${name}">
+        <xsd:sequence>
+            <xsd:element name="Title" type="OpenCmsString"/>
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundles>
+                <propertybundle name="${bundle}"/>
+            </resourcebundles>
+            <mappings>
+                <mapping element="Title" mapto="property:Title" />
+                <mapping element="Title" mapto="urlName" />
+            </mappings>
+            <searchsettings containerPageOnly="true"/>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+</xsd:schema>
