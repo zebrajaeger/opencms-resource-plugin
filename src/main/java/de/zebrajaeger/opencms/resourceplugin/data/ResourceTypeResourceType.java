@@ -1,20 +1,19 @@
-package de.zebrajaeger.opencms.resourceplugin.data.resourcetype;
+package de.zebrajaeger.opencms.resourceplugin.data;
 
-import de.zebrajaeger.opencms.resourceplugin.data.BasisType;
 import de.zebrajaeger.opencms.resourceplugin.util.XmlUtils;
 import org.jdom2.Element;
 
 /**
  * Created by lars on 11.02.2017.
  */
-public class ResourceType extends BasisType {
+public class ResourceTypeResourceType extends BasisType {
 
     private String clazz;
     private String name;
     private Long id;
     private String xsd;
 
-    private ResourceType() {
+    private ResourceTypeResourceType() {
     }
 
     public String getClazz() {
@@ -49,22 +48,22 @@ public class ResourceType extends BasisType {
         this.clazz = clazz;
     }
 
-    public ResourceType clazz(String value) {
+    public ResourceTypeResourceType clazz(String value) {
         clazz = value;
         return this;
     }
 
-    public ResourceType name(String value) {
+    public ResourceTypeResourceType name(String value) {
         name = value;
         return this;
     }
 
-    public ResourceType id(Long value) {
+    public ResourceTypeResourceType id(Long value) {
         id = value;
         return this;
     }
 
-    public ResourceType xsd(String value) {
+    public ResourceTypeResourceType xsd(String value) {
         xsd = value;
         return this;
     }
@@ -94,18 +93,18 @@ public class ResourceType extends BasisType {
         return result;
     }
 
-    public static ResourceType of(String name, long id, String xsd) {
-        return new ResourceType()
+    public static ResourceTypeResourceType of(String name, long id, String xsd) {
+        return new ResourceTypeResourceType()
                 .clazz("org.opencms.file.types.CmsResourceTypeXmlContent")
                 .name(name)
                 .id(id)
                 .xsd(xsd);
     }
 
-    public static ResourceType of(Element e) {
+    public static ResourceTypeResourceType of(Element e) {
         XmlUtils.checkType(e, "type");
         Element param = XmlUtils.getFirstChildWithName(e, "param", "schema");
-        return new ResourceType()
+        return new ResourceTypeResourceType()
                 .clazz(XmlUtils.readStringAttribute(e, "class"))
                 .name(XmlUtils.readStringAttribute(e, "name"))
                 .id(XmlUtils.readLongAttribute(e, "id"))

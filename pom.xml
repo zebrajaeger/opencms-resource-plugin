@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.zebrajaeger</groupId>
-  <artifactId>opencms-resource</artifactId>
+  <artifactId>opencms-resource-plugin</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
@@ -23,7 +23,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>2.0</version>
+      <version>3.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
@@ -44,7 +44,12 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.0</version>
     </dependency>
-
+    <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.5</version>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/org.jdom/jdom2 -->
     <dependency>
       <groupId>org.jdom</groupId>

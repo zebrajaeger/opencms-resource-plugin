@@ -1,7 +1,7 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
-import de.zebrajaeger.opencms.resourceplugin.data.explorertype.ExplorerType;
-import de.zebrajaeger.opencms.resourceplugin.data.resourcetype.ResourceType;
+import de.zebrajaeger.opencms.resourceplugin.data.ExplorerType;
+import de.zebrajaeger.opencms.resourceplugin.data.ResourceTypeResourceType;
 import org.jdom2.JDOMException;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class ManifestStubManipulatorTest {
     @Test
     public void read() throws JDOMException, IOException {
         ManifestStubManipulator manipulator = createManipulator();
-        List<ResourceType> resourceTypes = manipulator.readResourceTypes();
+        List<ResourceTypeResourceType> resourceTypes = manipulator.readResourceTypes();
         assertThat(resourceTypes.size(), is(9));
         System.out.println(resourceTypes);
     }
@@ -33,9 +33,9 @@ public class ManifestStubManipulatorTest {
     @Test
     public void firstResourceType() throws JDOMException, IOException {
         ManifestStubManipulator manipulator = createManipulator();
-        List<ResourceType> resourceTypes = manipulator.readResourceTypes();
+        List<ResourceTypeResourceType> resourceTypes = manipulator.readResourceTypes();
 
-        ResourceType rt = resourceTypes.get(0);
+        ResourceTypeResourceType rt = resourceTypes.get(0);
         System.out.println(rt);
         assertThat(rt.getClazz(), is("org.opencms.file.types.CmsResourceTypeXmlContent"));
         assertThat(rt.getName(), is("breadcrumb"));

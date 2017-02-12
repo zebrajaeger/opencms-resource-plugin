@@ -1,6 +1,5 @@
-package de.zebrajaeger.opencms.resourceplugin.data.explorertype;
+package de.zebrajaeger.opencms.resourceplugin.data;
 
-import de.zebrajaeger.opencms.resourceplugin.data.BasisType;
 import de.zebrajaeger.opencms.resourceplugin.util.XmlUtils;
 import org.jdom2.Element;
 
@@ -9,7 +8,7 @@ import java.text.DecimalFormat;
 /**
  * Created by lars on 11.02.2017.
  */
-public class NewResource extends BasisType {
+public class ExplorerTypeNewResource extends BasisType {
     private String page;
     private String uri;
     private Double order;
@@ -18,7 +17,7 @@ public class NewResource extends BasisType {
     private String info;
     private String key;
 
-    private NewResource() {
+    private ExplorerTypeNewResource() {
     }
 
     public String getPage() {
@@ -77,37 +76,37 @@ public class NewResource extends BasisType {
         this.key = key;
     }
 
-    public NewResource page(String value) {
+    public ExplorerTypeNewResource page(String value) {
         page = value;
         return this;
     }
 
-    public NewResource uri(String value) {
+    public ExplorerTypeNewResource uri(String value) {
         uri = value;
         return this;
     }
 
-    public NewResource order(Double value) {
+    public ExplorerTypeNewResource order(Double value) {
         order = value;
         return this;
     }
 
-    public NewResource autosetnavigation(Boolean value) {
+    public ExplorerTypeNewResource autosetnavigation(Boolean value) {
         autosetnavigation = value;
         return this;
     }
 
-    public NewResource autosettitle(Boolean value) {
+    public ExplorerTypeNewResource autosettitle(Boolean value) {
         autosettitle = value;
         return this;
     }
 
-    public NewResource info(String value) {
+    public ExplorerTypeNewResource info(String value) {
         info = value;
         return this;
     }
 
-    public NewResource key(String value) {
+    public ExplorerTypeNewResource key(String value) {
         key = value;
         return this;
     }
@@ -140,8 +139,8 @@ public class NewResource extends BasisType {
         return result;
     }
 
-    public static NewResource of(String name) {
-        return new NewResource()
+    public static ExplorerTypeNewResource of(String name) {
+        return new ExplorerTypeNewResource()
                 .page("structurecontent")
                 .uri("newresource_xmlcontent.jsp?newresourcetype=" + name)
                 .order(10D)
@@ -151,9 +150,9 @@ public class NewResource extends BasisType {
                 .key("title." + name);
     }
 
-    public static NewResource of(Element e) {
+    public static ExplorerTypeNewResource of(Element e) {
         XmlUtils.checkType(e, "newresource");
-        return new NewResource()
+        return new ExplorerTypeNewResource()
                 .page(XmlUtils.readStringAttribute(e, "page"))
                 .uri(XmlUtils.readStringAttribute(e, "uri"))
                 .order(XmlUtils.readDoubleAttribute(e, "order"))

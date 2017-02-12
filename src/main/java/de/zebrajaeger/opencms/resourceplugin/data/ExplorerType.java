@@ -1,6 +1,5 @@
-package de.zebrajaeger.opencms.resourceplugin.data.explorertype;
+package de.zebrajaeger.opencms.resourceplugin.data;
 
-import de.zebrajaeger.opencms.resourceplugin.data.BasisType;
 import de.zebrajaeger.opencms.resourceplugin.util.XmlUtils;
 import org.jdom2.Element;
 
@@ -13,7 +12,7 @@ public class ExplorerType extends BasisType {
     private String icon;
     private String bigicon;
     private String reference;
-    private NewResource newResource;
+    private ExplorerTypeNewResource newResource;
 
     private ExplorerType() {
 
@@ -59,11 +58,11 @@ public class ExplorerType extends BasisType {
         this.reference = reference;
     }
 
-    public NewResource getNewResource() {
+    public ExplorerTypeNewResource getNewResource() {
         return newResource;
     }
 
-    public void setNewResource(NewResource newResource) {
+    public void setNewResource(ExplorerTypeNewResource newResource) {
         this.newResource = newResource;
     }
 
@@ -92,7 +91,7 @@ public class ExplorerType extends BasisType {
         return this;
     }
 
-    public ExplorerType newResource(NewResource value) {
+    public ExplorerType newResource(ExplorerTypeNewResource value) {
         this.newResource = value;
         return this;
     }
@@ -130,7 +129,7 @@ public class ExplorerType extends BasisType {
                 .icon("default.png")
                 .bigicon("default-big.png")
                 .reference("xmlcontent")
-                .newResource(NewResource.of(name));
+                .newResource(ExplorerTypeNewResource.of(name));
     }
 
     public static ExplorerType of(Element e) {
@@ -141,7 +140,7 @@ public class ExplorerType extends BasisType {
                 .icon(XmlUtils.readStringAttribute(e, "icon"))
                 .bigicon(XmlUtils.readStringAttribute(e, "bigicon"))
                 .reference(XmlUtils.readStringAttribute(e, "reference"))
-                .newResource(NewResource.of(XmlUtils.getFirstChild(e, "newresource")));
+                .newResource(ExplorerTypeNewResource.of(XmlUtils.getFirstChild(e, "newresource")));
     }
 
 }

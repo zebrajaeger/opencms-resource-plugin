@@ -1,6 +1,6 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
-import de.zebrajaeger.opencms.resourceplugin.data.moduleconfig.ResourceType;
+import de.zebrajaeger.opencms.resourceplugin.data.ModuleConfigResourceType;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -25,7 +25,7 @@ public class ModuleConfigManipulator extends XmlManipulator {
         super(xmlInput);
     }
 
-    public Element add(ResourceType resourceType) {
+    public Element add(ModuleConfigResourceType resourceType) {
         Element result = resourceType.toXml();
         // TODO this could be language dependent
         Element e = findSingleElement("/ModuleConfigurations/ModuleConfiguration");

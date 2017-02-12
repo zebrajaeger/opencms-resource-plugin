@@ -1,6 +1,5 @@
-package de.zebrajaeger.opencms.resourceplugin.data.moduleconfig;
+package de.zebrajaeger.opencms.resourceplugin.data;
 
-import de.zebrajaeger.opencms.resourceplugin.data.BasisType;
 import de.zebrajaeger.opencms.resourceplugin.util.XmlUtils;
 import org.jdom2.CDATA;
 import org.jdom2.Element;
@@ -8,24 +7,23 @@ import org.jdom2.Element;
 /**
  * Created by lars on 11.02.2017.
  */
-public class ResourceType extends BasisType {
+public class ModuleConfigResourceType extends BasisType {
     private String typeName;
     private Boolean detailPagesDisabled;
 
-
-    public ResourceType typeName(String value) {
+    public ModuleConfigResourceType typeName(String value) {
         this.typeName = value;
         return this;
     }
 
-    public ResourceType detailPagesDisabled(Boolean value) {
+    public ModuleConfigResourceType detailPagesDisabled(Boolean value) {
         this.detailPagesDisabled = value;
         return this;
     }
 
     @Override
     public Element toXml() {
-        Element result = new Element("ResourceType");
+        Element result = new Element("ModuleConfigResourceType");
 
         if (typeName != null) {
             Element e = new Element("TypeName");
@@ -41,17 +39,16 @@ public class ResourceType extends BasisType {
         return result;
     }
 
-    public static ResourceType of(String resourcename) {
-        return new ResourceType()
+    public static ModuleConfigResourceType of(String resourcename) {
+        return new ModuleConfigResourceType()
                 .typeName(resourcename)
                 .detailPagesDisabled(true);
     }
 
-    public static ResourceType of(Element e) {
-        XmlUtils.checkType(e, "ResourceType");
-        return new ResourceType()
+    public static ModuleConfigResourceType of(Element e) {
+        XmlUtils.checkType(e, "ModuleConfigResourceType");
+        return new ModuleConfigResourceType()
                 .typeName(XmlUtils.getFirstChild(e, "TypeName").getText())
                 .detailPagesDisabled(Boolean.parseBoolean(XmlUtils.getFirstChild(e, "DetailPagesDisabled").getText()));
     }
-
 }

@@ -8,6 +8,7 @@ public class FormatterTemplate extends FileTemplate {
 
     public FormatterTemplate(String name) {
         super("templates/formatter.jsp");
+        this.name = name;
     }
 
     public String getName() {

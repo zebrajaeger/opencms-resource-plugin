@@ -11,15 +11,15 @@
 <%--@elvariable id="r" type="java.util.Map<java.lang.String, java.lang.String>"--%>
 
 <cms:formatter var="c" val="v" rdfa="r">
-    <c:set var="contentAvailable" value="${c.hasLocale[cms.locale.language]}"/>
+    <c:set var="contentAvailable" value="#[[$]]#{c.hasLocale[cms.locale.language]}"/>
 
-    <c:if test="${not contentAvailable}">
+    <c:if test="#[[$]]#{not contentAvailable}">
         <section class="has--missing-translation">
             <p>No content defined for this language</p>
         </section>
     </c:if>
 
-    <c:if test="${contentAvailable}">
+    <c:if test="#[[$]]#{contentAvailable}">
         <div>
             <h2>Hello, i am ${name}</h2>
             <p>Please implement me!</p>

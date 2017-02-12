@@ -8,7 +8,7 @@ public class SchemaTemplate extends FileTemplate {
     private String bundle;
 
     public SchemaTemplate(String name, String bundle) {
-        super("template/schema.xsd");
+        super("templates/schema.xsd");
         this.name = name;
         this.bundle = bundle;
     }

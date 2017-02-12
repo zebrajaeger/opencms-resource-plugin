@@ -1,5 +1,8 @@
 package de.zebrajaeger.opencms.resourceplugin.mojo;
 
+import de.zebrajaeger.opencms.resourceplugin.ResourceCreator;
+import de.zebrajaeger.opencms.resourceplugin.ResourceCreatorConfig;
+import de.zebrajaeger.opencms.resourceplugin.ResourceCreatorException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.maven.plugin.AbstractMojo;
@@ -14,18 +17,24 @@ import java.io.File;
 /**
  * Created by lars on 11.02.2017.
  */
-@Mojo(name = "touch", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-public class CreateResourceMojo extends AbstractMojo {
+@Mojo(name = "createResource", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorConfig {
 
-    @Parameter(defaultValue = "/src/opencms/manifest", property = "manifestDir", required = true)
+    @Parameter(defaultValue = "${project.basedir}/src/main/opencms/manifest", property = "manifestDir", required = true)
     private File manifestDir;
 
     @Parameter(defaultValue = "manifest_stub.xml", property = "manifestStubFile", required = true)
     private String manifestStubFile;
 
-    @Parameter(defaultValue = "/src/opencms/manifest", property = "vfsDir", required = true)
+    @Parameter(defaultValue = "${project.basedir}/src/main/opencms/vfs", property = "vfsDir", required = true)
     private File vfsDir;
 
+    @Parameter(property = "newResourceName", required = true)
+    private String newResourceName;
+
+    /**
+     * 'auto' or a long >0
+     */
     @Parameter(defaultValue = "auto", property = "resourceId", required = true)
     private String resourceId;
 
@@ -35,9 +44,24 @@ public class CreateResourceMojo extends AbstractMojo {
     @Parameter(defaultValue = "default-big.png", property = "bigicon", required = true)
     private String bigicon;
 
+    @Parameter(defaultValue = "${project.artifactId}", property = "moduleName", required = true)
+    private String moduleName;
+
+    /**
+     * 'distributed' or 'resource'
+     */
+    @Parameter(defaultValue = "resource", property = "layout", required = true)
+    private String layout;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         checkParamters();
+
+        try {
+            new ResourceCreator().createResource(this);
+        } catch (ResourceCreatorException e) {
+            throw new MojoExecutionException("error while creating resource", e);
+        }
     }
 
     private void checkParamters() throws MojoExecutionException {
@@ -45,8 +69,13 @@ public class CreateResourceMojo extends AbstractMojo {
         File manifestStub = new File(manifestDir, manifestStubFile);
         checkFile(manifestStub, "manifestStubFile");
         checkDirectory(vfsDir, "vfsDir");
+        checkStringNotBlank(newResourceName, "newResourceName");
         checkResourceid();
-        checkIcons();
+
+        checkStringNotBlank(icon, "icon");
+        checkStringNotBlank(bigicon, "bigicon");
+        checkStringNotBlank(moduleName, "moduleName");
+        checkStringOneOf(layout, "layout", true, "distributed", "resource");
     }
 
     private void checkDirectory(File toCheck, String varName) throws MojoExecutionException {
@@ -80,10 +109,7 @@ public class CreateResourceMojo extends AbstractMojo {
     }
 
     private void checkResourceid() throws MojoExecutionException {
-        if (StringUtils.isBlank(resourceId)) {
-            String msg = String.format("'resourceId' variable cannot be blank");
-            throw new MojoExecutionException(msg);
-        }
+        checkStringNotBlank(resourceId, "resourceId");
 
         if (!"auto".equals(resourceId)) {
             try {
@@ -99,18 +125,75 @@ public class CreateResourceMojo extends AbstractMojo {
         }
     }
 
-    private void checkIcons() throws MojoExecutionException {
-        if (StringUtils.isBlank(icon)) {
-            String msg = String.format("'icon' variable cannot be blank");
-            throw new MojoExecutionException(msg);
-        }
-        if (StringUtils.isBlank(bigicon)) {
-            String msg = String.format("'bigicon' variable cannot be blank");
+    private void checkStringNotBlank(String value, String name) throws MojoExecutionException {
+        if (StringUtils.isBlank(value)) {
+            String msg = String.format("'%s' variable cannot be blank", name);
             throw new MojoExecutionException(msg);
         }
     }
 
-        @Override
+    private void checkStringOneOf(String value, String name, boolean notEmpty, String... occurrence) throws MojoExecutionException {
+        if (notEmpty) {
+            if (StringUtils.isBlank(value)) {
+                String msg = String.format("'%s' variable cannot be blank", name);
+                throw new MojoExecutionException(msg);
+            }
+        }
+
+        boolean ok = false;
+        for (String x : occurrence) {
+            ok |= x.equals(value);
+        }
+        if (!ok) {
+            String msg = String.format("'%s' variable must have one of these values: '%s'", name, occurrence);
+            throw new MojoExecutionException(msg);
+        }
+    }
+
+    @Override
+    public File getManifestDir() {
+        return manifestDir;
+    }
+
+    @Override
+    public String getManifestStubFile() {
+        return manifestStubFile;
+    }
+
+    @Override
+    public File getVfsDir() {
+        return vfsDir;
+    }
+
+    public String getNewResourceName() {
+        return newResourceName;
+    }
+
+    @Override
+    public String getResourceId() {
+        return resourceId;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    @Override
+    public String getBigicon() {
+        return bigicon;
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    @Override
+    public Layout getLayout() {
+        return Layout.valueOf(layout.toUpperCase());
+    }
+
+    @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }

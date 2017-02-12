@@ -7,7 +7,7 @@ public class BundleTemplate extends FileTemplate {
     private String name;
 
     public BundleTemplate(String name) {
-        super("template/bundle.xml");
+        super("templates/bundle.xml");
         this.name = name;
     }
 
