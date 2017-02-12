@@ -3,10 +3,12 @@ package de.zebrajaeger.opencms.resourceplugin;
 import de.zebrajaeger.opencms.resourceplugin.data.ModuleConfigResourceType;
 import de.zebrajaeger.opencms.resourceplugin.template.*;
 import de.zebrajaeger.opencms.resourceplugin.util.ResourceUtils;
+import org.apache.commons.io.FileUtils;
 import org.jdom2.JDOMException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by lars on 11.02.2017.
@@ -60,6 +62,7 @@ public class ResourceCreator {
             }
 
             manifestStubManipulator.addResource(typeName, files.getVfsSchemaPath(), resourceIdValue);
+            FileUtils.write(files.getManifestStub(), manifestStubManipulator.toString(), StandardCharsets.UTF_8);
 
             // module config
             if(!files.getModuleConfig().getVfs().exists()){
@@ -68,6 +71,7 @@ public class ResourceCreator {
 
             ModuleConfigManipulator moduleConfigManipulator = new ModuleConfigManipulator(files.getModuleConfig().getVfs());
             moduleConfigManipulator.add(ModuleConfigResourceType.of(typeName));
+            FileUtils.write(files.getModuleConfig().getVfs(), moduleConfigManipulator.toString(), StandardCharsets.UTF_8);
 
         } catch (FileTemplateFactoryException | JDOMException | IOException e) {
             throw new ResourceCreatorException("could not create resouce", e);

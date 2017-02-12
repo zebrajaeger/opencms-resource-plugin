@@ -79,7 +79,7 @@ public class FileLayout {
             result.formatterConfig = initFileForResourceLayout(resourceRoot, typeName, "xml");
             result.schema = initFileForResourceLayout(resourceRoot, typeName, "xsd");
             result.vfsSchemaPath = "/system/modules/" + cfg.getModuleName() + "/" + typeName + "/" + typeName + ".xsd";
-            result.resourceBundle = initFileForResourceLayout(resourceRoot, typeName, null);
+            result.resourceBundle = initFileForResourceLayout(resourceRoot,  cfg.getModuleName() + "." + typeName, null);
 
         } else if (cfg.getLayout() == ResourceCreatorConfig.Layout.DISTRIBUTED) {
             result.formatter = initFileForDistributedLayout(result, moduleRoot, "formatters", "jsp", typeName);
