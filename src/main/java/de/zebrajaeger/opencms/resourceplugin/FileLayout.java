@@ -16,7 +16,9 @@ public class FileLayout {
     private List<FilePair> directories = new LinkedList<>();
     private File manifestStub;
     private FilePair moduleConfig;
+    private FilePair workplaceBundle;
     private FilePair formatter;
+    private String vfsFormatterPath;
     private FilePair formatterConfig;
     private FilePair schema;
     private String vfsSchemaPath;
@@ -34,8 +36,16 @@ public class FileLayout {
         return moduleConfig;
     }
 
+    public FilePair getWorkplaceBundle() {
+        return workplaceBundle;
+    }
+
     public FilePair getFormatter() {
         return formatter;
+    }
+
+    public String getVfsFormatterPath() {
+        return vfsFormatterPath;
     }
 
     public FilePair getFormatterConfig() {
@@ -68,6 +78,10 @@ public class FileLayout {
                 new File(moduleRoot.getVfs(), ".config"),
                 new File(moduleRoot.getManifest(), ".config.ocmsfile.xml"));
 
+        result.workplaceBundle = new FilePair(
+                new File(moduleRoot.getVfs(), cfg.getModuleName() + ".workplace"),
+                new File(moduleRoot.getManifest(), cfg.getModuleName() + ".workplace.ocmsfile.xml"));
+
         if (cfg.getLayout() == ResourceCreatorConfig.Layout.RESOURCE) {
             FilePair resourceRoot = new FilePair(
                     new File(moduleRoot.getVfs(), typeName),
@@ -76,6 +90,7 @@ public class FileLayout {
             result.directories.add(resourceRoot);
 
             result.formatter = initFileForResourceLayout(resourceRoot, typeName, "jsp");
+            result.vfsFormatterPath = "/system/modules/" + cfg.getModuleName() + "/" + typeName + "/" + typeName + ".jsp";
             result.formatterConfig = initFileForResourceLayout(resourceRoot, typeName, "xml");
             result.schema = initFileForResourceLayout(resourceRoot, typeName, "xsd");
             result.vfsSchemaPath = "/system/modules/" + cfg.getModuleName() + "/" + typeName + "/" + typeName + ".xsd";

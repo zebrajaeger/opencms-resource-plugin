@@ -10,10 +10,11 @@ public class FormatterConfigTemplate extends FileTemplate {
     private String resourcename;
     private String formatterpath;
 
-    public FormatterConfigTemplate(String name) {
+    public FormatterConfigTemplate(String name, String formatterpath) {
         super("templates/formatter-config.xml");
         this.name = name;
         this.resourcename = ResourceUtils.toResourceName(name);
+        this.formatterpath = formatterpath;
     }
 
     public String getName() {

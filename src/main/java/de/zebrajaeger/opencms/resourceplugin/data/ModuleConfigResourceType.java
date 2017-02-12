@@ -23,7 +23,7 @@ public class ModuleConfigResourceType extends BasisType {
 
     @Override
     public Element toXml() {
-        Element result = new Element("ModuleConfigResourceType");
+        Element result = new Element("ResourceType");
 
         if (typeName != null) {
             Element e = new Element("TypeName");

@@ -25,57 +25,91 @@ public class ResourceCreator {
             }
 
             // formatter
-            createFile(files.getFormatter(), new FormatterTemplate(cfg.getNewResourceName()), ResourceType.JSP);
+            createFile(
+                    files.getFormatter(),
+                    new FormatterTemplate(cfg.getNewResourceName()),
+                    ResourceType.JSP);
 
             // formatter config
-            createFile(files.getFormatterConfig(), new FormatterConfigTemplate(cfg.getNewResourceName()), ResourceType.FORMATTER_CONFIG);
+            createFile(
+                    files.getFormatterConfig(),
+                    new FormatterConfigTemplate(cfg.getNewResourceName(), files.getVfsFormatterPath()),
+                    ResourceType.FORMATTER_CONFIG);
 
             // schema
             String bundleName = cfg.getModuleName() + "." + typeName;
-            createFile(files.getSchema(), new SchemaTemplate(cfg.getNewResourceName(), bundleName), ResourceType.PLAIN);
+            createFile(
+                    files.getSchema(),
+                    new SchemaTemplate(cfg.getNewResourceName(), bundleName),
+                    ResourceType.PLAIN);
 
             // bundles
-            createFile(files.getResourceBundle(), new BundleTemplate(cfg.getNewResourceName()), ResourceType.XMLVFSBUNDLE);
-
-            if (!files.getModuleConfig().getVfs().exists()) {
-                createFile(files.getModuleConfig(), new ModuleConfigTemplate(), ResourceType.MODULE_CONFIG);
-            }
+            createFile(
+                    files.getResourceBundle(),
+                    new BundleTemplate(cfg.getNewResourceName()),
+                    ResourceType.XMLVFSBUNDLE);
 
             // manifest Stub
-            ManifestStubManipulator manifestStubManipulator = new ManifestStubManipulator(files.getManifestStub());
-
-            String resourceId = cfg.getResourceId();
-            Long resourceIdValue;
-            if ("auto".equals(resourceId)) {
-                resourceIdValue = manifestStubManipulator.getHighestResourceId();
-                if (resourceIdValue == null) {
-                    resourceIdValue = 100000L;
-                } else {
-                    resourceIdValue++;
-                }
-            } else {
-                resourceIdValue = Long.parseLong(resourceId);
-                if (manifestStubManipulator.existsResourceId(resourceIdValue)) {
-                    String msg = String.format("ResourceId '%s'already exist", resourceIdValue);
-                    throw new ResourceCreatorException(msg);
-                }
-            }
-
-            manifestStubManipulator.addResource(typeName, files.getVfsSchemaPath(), resourceIdValue);
-            FileUtils.write(files.getManifestStub(), manifestStubManipulator.toString(), StandardCharsets.UTF_8);
+            modifyManifestStub(cfg, files, typeName);
 
             // module config
-            if(!files.getModuleConfig().getVfs().exists()){
-                createFile(files.getModuleConfig(), new ModuleConfigTemplate(), ResourceType.MODULE_CONFIG);
-            }
+            modifyModuleConfig(files, typeName);
 
-            ModuleConfigManipulator moduleConfigManipulator = new ModuleConfigManipulator(files.getModuleConfig().getVfs());
-            moduleConfigManipulator.add(ModuleConfigResourceType.of(typeName));
-            FileUtils.write(files.getModuleConfig().getVfs(), moduleConfigManipulator.toString(), StandardCharsets.UTF_8);
+            // workplace bundle
+            modifyWorkplaceBundle(cfg, files, typeName);
 
         } catch (FileTemplateFactoryException | JDOMException | IOException e) {
             throw new ResourceCreatorException("could not create resouce", e);
         }
+    }
+
+    private void modifyWorkplaceBundle(ResourceCreatorConfig cfg, FileLayout files, String typeName) throws FileTemplateFactoryException, IOException, JDOMException {
+        if(!files.getWorkplaceBundle().getVfs().exists()){
+            createFile(files.getWorkplaceBundle(), new WorkplaceBundleTemplate(cfg.getNewResourceName()), ResourceType.XMLVFSBUNDLE);
+        }
+
+        VfsBundleManipulator vfsBundleManipulator = new VfsBundleManipulator(files.getWorkplaceBundle().getVfs());
+        vfsBundleManipulator.add("fileicon." + typeName, cfg.getNewResourceName());
+        vfsBundleManipulator.add("desc." + typeName, typeName);
+        vfsBundleManipulator.add("title." + typeName, cfg.getNewResourceName());
+        FileUtils.write(files.getWorkplaceBundle().getVfs(), vfsBundleManipulator.toString(), StandardCharsets.UTF_8);
+    }
+
+    private void modifyModuleConfig(FileLayout files, String typeName) throws FileTemplateFactoryException, IOException, JDOMException {
+        if (!files.getModuleConfig().getVfs().exists()) {
+            createFile(
+                    files.getModuleConfig(),
+                    new ModuleConfigTemplate(),
+                    ResourceType.MODULE_CONFIG);
+        }
+
+        ModuleConfigManipulator moduleConfigManipulator = new ModuleConfigManipulator(files.getModuleConfig().getVfs());
+        moduleConfigManipulator.add(ModuleConfigResourceType.of(typeName));
+        FileUtils.write(files.getModuleConfig().getVfs(), moduleConfigManipulator.toString(), StandardCharsets.UTF_8);
+    }
+
+    private void modifyManifestStub(ResourceCreatorConfig cfg, FileLayout files, String typeName) throws JDOMException, IOException, ResourceCreatorException {
+        ManifestStubManipulator manifestStubManipulator = new ManifestStubManipulator(files.getManifestStub());
+
+        String resourceId = cfg.getResourceId();
+        Long resourceIdValue;
+        if ("auto".equals(resourceId)) {
+            resourceIdValue = manifestStubManipulator.getHighestResourceId();
+            if (resourceIdValue == null) {
+                resourceIdValue = 100000L;
+            } else {
+                resourceIdValue++;
+            }
+        } else {
+            resourceIdValue = Long.parseLong(resourceId);
+            if (manifestStubManipulator.existsResourceId(resourceIdValue)) {
+                String msg = String.format("ResourceId '%s'already exist", resourceIdValue);
+                throw new ResourceCreatorException(msg);
+            }
+        }
+
+        manifestStubManipulator.addResource(typeName, files.getVfsSchemaPath(), resourceIdValue);
+        FileUtils.write(files.getManifestStub(), manifestStubManipulator.toString(), StandardCharsets.UTF_8);
     }
 
     private void createFile(FilePair files, FileTemplate template, ResourceType resourceType) throws FileTemplateFactoryException, IOException {
