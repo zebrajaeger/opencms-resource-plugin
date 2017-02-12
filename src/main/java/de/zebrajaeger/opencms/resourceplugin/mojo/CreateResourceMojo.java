@@ -158,17 +158,14 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         }
     }
 
-    @Override
     public File getManifestDir() {
         return manifestDir;
     }
 
-    @Override
     public String getManifestStubFile() {
         return manifestStubFile;
     }
 
-    @Override
     public File getVfsDir() {
         return vfsDir;
     }
@@ -177,17 +174,14 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         return newResourceName;
     }
 
-    @Override
     public String getResourceId() {
         return resourceId;
     }
 
-    @Override
     public String getIcon() {
         return icon;
     }
 
-    @Override
     public String getBigicon() {
         return bigicon;
     }
@@ -196,14 +190,11 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         return moduleName;
     }
 
-    @Override
     public Layout getLayout() {
         return Layout.valueOf(layout.toUpperCase());
     }
 
-    @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
-
 }
