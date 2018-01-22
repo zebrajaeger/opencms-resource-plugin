@@ -4,6 +4,8 @@ import de.zebrajaeger.opencms.resourceplugin.data.ExplorerType;
 import de.zebrajaeger.opencms.resourceplugin.data.ResourceTypeResourceType;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +17,8 @@ import java.util.List;
  * Created by lars on 11.02.2017.
  */
 public class ManifestStubManipulator extends XmlManipulator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ManifestStubManipulator.class);
 
     public ManifestStubManipulator(File xmlFile) throws JDOMException, IOException {
         super(xmlFile);
@@ -40,14 +44,14 @@ public class ManifestStubManipulator extends XmlManipulator {
         return result;
     }
 
-    public Element add(ResourceTypeResourceType resourceType) {
+    private Element add(ResourceTypeResourceType resourceType) {
         Element result = resourceType.toXml();
         Element e = findSingleElement("/export/module/resourcetypes");
         e.addContent(result);
         return result;
     }
 
-    public Element add(ExplorerType explorerType) {
+    private Element add(ExplorerType explorerType) {
         Element result = explorerType.toXml();
         Element e = findSingleElement("/export/module/explorertypes");
         e.addContent(result);
@@ -83,6 +87,7 @@ public class ManifestStubManipulator extends XmlManipulator {
         }
         ++id;
 
+        LOG.info("Add resource to manifest_stub name:'{}' id:'{}'", name, id);
         add(ResourceTypeResourceType.of(name, id, vfsXsdPath));
         add(ExplorerType.of(name));
     }

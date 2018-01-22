@@ -68,15 +68,23 @@ then the moduleName must be "de.ikk.classic.cms.template"  .
 in the same directory which name is the resource name. The value "DISTRIBUTED" let us create all the new 
 files in different directories (schema in "schemas", bundle in "i18n", formatter and formatter config in "formatters"")  
 
-## TODO
-* add "resourceTypeSubDirectory"
-* let de.zebrajaeger.opencms.resourceplugin.ResourceCreator.createDirectory 
-create every non-exisitng directory (not only the last one in path)  
-* throw exception if id aleready exists
-* throw exception if resourceType name aleready exists
-* use the plugin without modifiing the pom.xml
+### Variable "resourceTypeSubDirectory"  
+* Default value: "ce"   
+* Required: true   
+* Description: If variable "layout" is set to "RESOURCE" and this value is set, the new resourcetype 
+folder will not be created in module root. Instead, in module root will be a new folder created (if not exists) 
+with the name of this variable. The folder of the new resourceType is created within the new subfolder. 
+* Example: We create a new resourceType "foo" and "resourceTypeSubDirectory" is "ce". 
+The "moduleName" is "my.opencms.module". All the new files a created in vfs/manifest are in the folder 
+"/system/modules/my.opencms.module/ce/foo/". To prevent create a additional subfolder, set this value to "" (empty string).
 
-## prepare project
+## TODO
+* throw exception if resourceType name already exists
+
+## Use from commandline
+mvn de.zebrajaeger:opencms-resource-plugin:createResource -DnewResourceName=abc
+
+## Add as profile to project
 add to pom.xml
 ```xml
 <project>

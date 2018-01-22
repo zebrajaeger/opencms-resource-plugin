@@ -7,6 +7,8 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,15 +22,17 @@ import java.util.Map;
  * Created by lars on 11.02.2017.
  */
 public class FileTemplateFactory {
+    private static final Logger LOG = LoggerFactory.getLogger(FileTemplateFactory.class);
 
-    public String generate(FileTemplate template, File target) throws FileTemplateFactoryException, IOException {
+    public void writeToFileFile(FileTemplate template, File target) throws FileTemplateFactoryException, IOException {
         if (target.exists()) {
             throw new FileAlreadyExistsException(target.getAbsolutePath());
         }
 
+        LOG.info("Create File '{}'", target);
+
         String content = generate(template);
         FileUtils.write(target, content, StandardCharsets.UTF_8);
-        return content;
     }
 
     public String generate(FileTemplate template) throws FileTemplateFactoryException {

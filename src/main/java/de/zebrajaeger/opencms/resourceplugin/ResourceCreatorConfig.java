@@ -27,4 +27,6 @@ public interface ResourceCreatorConfig {
     String getModuleName();
 
     Layout getLayout();
+
+    String getResourceTypeSubDirectory();
 }
