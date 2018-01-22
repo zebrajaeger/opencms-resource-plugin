@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -83,9 +85,20 @@ public class FileLayout {
                 new File(moduleRoot.getManifest(), cfg.getModuleName() + ".workplace.ocmsfile.xml"));
 
         if (cfg.getLayout() == ResourceCreatorConfig.Layout.RESOURCE) {
-            FilePair resourceRoot = new FilePair(
-                    new File(moduleRoot.getVfs(), typeName),
-                    new File(moduleRoot.getManifest(), typeName));
+
+            File vfsParent = moduleRoot.getVfs();
+            File manifestParent = moduleRoot.getManifest();
+            if (StringUtils.isNotBlank(cfg.getResourceTypeSubDirectory())) {
+                for (Path p : Paths.get(cfg.getResourceTypeSubDirectory())) {
+                    vfsParent = new File(vfsParent, p.toString());
+                    manifestParent = new File(manifestParent, p.toString());
+
+                    FilePair dir = new FilePair(vfsParent, manifestParent);
+                    result.directories.add(dir);
+                }
+            }
+
+            FilePair resourceRoot = new FilePair(new File(vfsParent, typeName), new File(manifestParent, typeName));
 
             result.directories.add(resourceRoot);
 
@@ -94,7 +107,7 @@ public class FileLayout {
             result.formatterConfig = initFileForResourceLayout(resourceRoot, typeName, "xml");
             result.schema = initFileForResourceLayout(resourceRoot, typeName, "xsd");
             result.vfsSchemaPath = "/system/modules/" + cfg.getModuleName() + "/" + typeName + "/" + typeName + ".xsd";
-            result.resourceBundle = initFileForResourceLayout(resourceRoot,  cfg.getModuleName() + "." + typeName, null);
+            result.resourceBundle = initFileForResourceLayout(resourceRoot, cfg.getModuleName() + "." + typeName, null);
 
         } else if (cfg.getLayout() == ResourceCreatorConfig.Layout.DISTRIBUTED) {
             result.formatter = initFileForDistributedLayout(result, moduleRoot, "formatters", "jsp", typeName);
@@ -107,7 +120,8 @@ public class FileLayout {
         return result;
     }
 
-    private static FilePair initFileForDistributedLayout(FileLayout result, FilePair moduleRoot, String subDirName, String typeName, String fileExtension) {
+    private static FilePair initFileForDistributedLayout(FileLayout result, FilePair moduleRoot, String subDirName, String typeName,
+                                                         String fileExtension) {
         FilePair dir;
         dir = new FilePair(
                 new File(moduleRoot.getVfs(), subDirName),
@@ -126,7 +140,7 @@ public class FileLayout {
         }
     }
 
-    private static FilePair initFileForResourceLayout(FilePair resourceRoot, String typeName,String fileExtension) {
+    private static FilePair initFileForResourceLayout(FilePair resourceRoot, String typeName, String fileExtension) {
         if (StringUtils.isNotBlank(fileExtension)) {
             return new FilePair(
                     new File(resourceRoot.getVfs(), typeName + "." + fileExtension),

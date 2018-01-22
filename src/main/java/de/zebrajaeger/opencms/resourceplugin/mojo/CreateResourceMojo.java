@@ -17,45 +17,59 @@ import java.io.File;
 /**
  * Created by lars on 11.02.2017.
  */
+@SuppressWarnings("unused")
 @Mojo(name = "createResource", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorConfig {
 
+    @SuppressWarnings("unused")
     @Parameter(defaultValue = "${project.basedir}/src/main/opencms/manifest", property = "manifestDir", required = true)
     private File manifestDir;
 
+    @SuppressWarnings("unused")
     @Parameter(defaultValue = "manifest_stub.xml", property = "manifestStubFile", required = true)
     private String manifestStubFile;
 
+    @SuppressWarnings("unused")
     @Parameter(defaultValue = "${project.basedir}/src/main/opencms/vfs", property = "vfsDir", required = true)
     private File vfsDir;
 
+    @SuppressWarnings("unused")
     @Parameter(property = "newResourceName", required = true)
     private String newResourceName;
 
     /**
      * 'auto' or a long >0
      */
+    @SuppressWarnings("unused")
     @Parameter(defaultValue = "auto", property = "resourceId", required = true)
     private String resourceId;
 
+    @SuppressWarnings("unused")
     @Parameter(defaultValue = "default.png", property = "icon", required = true)
     private String icon;
 
+    @SuppressWarnings("unused")
     @Parameter(defaultValue = "default-big.png", property = "bigicon", required = true)
     private String bigicon;
 
+    @SuppressWarnings("unused")
     @Parameter(defaultValue = "${project.artifactId}", property = "moduleName", required = true)
     private String moduleName;
+
+    @SuppressWarnings("unused")
+    @Parameter(defaultValue = "ce", property = "resourceTypeSubDirectory", required = true)
+    private String resourceTypeSubDirectory;
 
     /**
      * 'distributed' or 'resource'
      */
+    @SuppressWarnings("unused")
     @Parameter(defaultValue = "resource", property = "layout", required = true)
     private String layout;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        checkParamters();
+        checkParameters();
 
         try {
             new ResourceCreator().createResource(this);
@@ -64,18 +78,17 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         }
     }
 
-    private void checkParamters() throws MojoExecutionException {
+    private void checkParameters() throws MojoExecutionException {
         checkDirectory(manifestDir, "manifestDir");
         File manifestStub = new File(manifestDir, manifestStubFile);
         checkFile(manifestStub, "manifestStubFile");
         checkDirectory(vfsDir, "vfsDir");
         checkStringNotBlank(newResourceName, "newResourceName");
-        checkResourceid();
+        checkResourceId();
 
         checkStringNotBlank(icon, "icon");
         checkStringNotBlank(bigicon, "bigicon");
         checkStringNotBlank(moduleName, "moduleName");
-        checkFirstCharUppercase(moduleName, "moduleName");
         checkStringOneOf(layout, "layout", true, "distributed", "resource");
     }
 
@@ -109,7 +122,7 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         }
     }
 
-    private void checkResourceid() throws MojoExecutionException {
+    private void checkResourceId() throws MojoExecutionException {
         checkStringNotBlank(resourceId, "resourceId");
 
         if (!"auto".equals(resourceId)) {
@@ -192,6 +205,10 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
 
     public Layout getLayout() {
         return Layout.valueOf(layout.toUpperCase());
+    }
+
+    public String getResourceTypeSubDirectory() {
+        return resourceTypeSubDirectory;
     }
 
     public String toString() {
