@@ -115,7 +115,3 @@ add to pom.xml
 <!-- ... -->
 </project>
 ```
-usage
-```
- mvn generate-sources -PcreateResource -DnewResourceName=FooBar
-```
