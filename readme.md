@@ -27,7 +27,8 @@ Scaffolding plugin for an easy way to add a new resourceType to your OpenCms pro
 * Default value: no default value   
 * Required: true   
 * Type: java.lang.String   
-* Description: The name of the new resource type. 
+* Description: The name of the new resourceType. Multible values are supported as a comma-separated list of resource-type-names. 
+In this case the 'resourceId'-variable should be 'auto'.
 
 ### Variable"resourceId"  
 * Default value: "auto"   
@@ -86,7 +87,13 @@ The "moduleName" is "my.opencms.module". All the new files a created in vfs/mani
 * throw exception if resourceType name already exists
 
 ## Use from commandline
+```
 mvn de.zebrajaeger:opencms-resource-plugin:createResource -DnewResourceName=abc
+```
+Create multible resourceTypes at once:   
+```
+mvn de.zebrajaeger:opencms-resource-plugin:createResource -DnewResourceName=abc,def
+```
 
 ## Add as profile to project
 add to pom.xml
