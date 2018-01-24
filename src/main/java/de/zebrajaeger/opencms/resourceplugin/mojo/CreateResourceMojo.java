@@ -147,7 +147,7 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     }
 
     private void checkFirstCharUppercase(String value, String name) throws MojoExecutionException {
-        if(!Character.isUpperCase(value.toCharArray()[0])){
+        if (!Character.isUpperCase(value.toCharArray()[0])) {
             String msg = String.format("First char must be uppercase in variable '%s'", name);
             throw new MojoExecutionException(msg);
         }
