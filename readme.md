@@ -80,6 +80,7 @@ The "moduleName" is "my.opencms.module". All the new files a created in vfs/mani
 "/system/modules/my.opencms.module/ce/foo/". To prevent create a additional subfolder, set this value to "" (empty string).
 
 ## TODO
+* check that a name does not start wit a number, minus or underscore
 * The module config may have more then one language
 ** see de.zebrajaeger.opencms.resourceplugin.ModuleConfigManipulator.add
 * The resourcebundle may have more than one language
