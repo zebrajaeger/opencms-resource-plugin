@@ -27,7 +27,7 @@ public class ModuleConfigManipulator extends XmlManipulator {
 
     public Element add(ModuleConfigResourceType resourceType) {
         Element result = resourceType.toXml();
-        // TODO this could be language dependent
+
         Element e = findSingleElement("/ModuleConfigurations/ModuleConfiguration");
         e.addContent(0, result);
         return result;

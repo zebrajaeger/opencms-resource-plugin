@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by lars on 11.02.2017.
  */
+@SuppressWarnings("checkstyle:classfanoutcomplexity")
 public class ResourceCreator {
     private static final Logger LOG = LoggerFactory.getLogger(ResourceCreator.class);
 

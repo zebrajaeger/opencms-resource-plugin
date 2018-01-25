@@ -4,13 +4,33 @@
 
     <groupId>de.zebrajaeger</groupId>
     <artifactId>opencms-resource-plugin</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.4.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
-    <name>opencmas-resource Maven Plugin</name>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Scaffolding plugin to create resourceTypes in OpenCms projects</description>
+    <url>https://github.com/zebrajaeger/opencms-resource-plugin</url>
 
-    <!-- FIXME change it to the project's website -->
-    <url>http://maven.apache.org</url>
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.de.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Lars Brandt</name>
+            <email>zebrajaeger@zebrajaeger.de</email>
+            <organizationUrl>http://lars-brandt.de</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/zebrajaeger/opencms-resource-plugin.git</connection>
+        <developerConnection>scm:git:ssh://github.com:zebrajaeger/opencms-resource-plugin.git</developerConnection>
+        <url>https://github.com/zebrajaeger/opencms-resource-plugin/tree/master</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,12 +77,14 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.7</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.jdom/jdom2 -->
         <dependency>
             <groupId>org.jdom</groupId>
@@ -75,12 +97,14 @@
             <artifactId>jaxen</artifactId>
             <version>1.1.6</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity -->
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
             <version>1.7</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
         <dependency>
             <groupId>commons-beanutils</groupId>
@@ -129,7 +153,179 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- code check stuff-->
+
+            <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/taglist-maven-plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <tagListOptions>
+                        <tagClasses>
+                            <tagClass>
+                                <tags>
+                                    <tag>
+                                        <matchString>TODO</matchString>
+                                        <matchType>exact</matchType>
+                                    </tag>
+                                    <tag>
+                                        <matchString>FIXME</matchString>
+                                        <matchType>exact</matchType>
+                                    </tag>
+                                    <tag>
+                                        <matchString>XXX</matchString>
+                                        <matchType>exact</matchType>
+                                    </tag>
+                                    <tag>
+                                        <matchString>WORKAROUND</matchString>
+                                        <matchType>exact</matchType>
+                                    </tag>
+                                    <tag>
+                                        <matchString>!!!</matchString>
+                                        <matchType>exact</matchType>
+                                    </tag>
+                                    <tag>
+                                        <matchString>???</matchString>
+                                        <matchType>exact</matchType>
+                                    </tag>
+                                </tags>
+                            </tagClass>
+                        </tagClasses>
+                    </tagListOptions>
+                </configuration>
+            </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <configLocation>${project.basedir}/checkstyle-checker-strong.xml</configLocation>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/findbugs-maven-plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.5</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Low</threshold>
+                    <xmlOutput>true</xmlOutput>
+                </configuration>
+            </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-pmd-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.8</version>
+                <configuration>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.7</targetJdk>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>cpd</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/javancss-maven-plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+
+            <!-- deployment stuff -->
+
+            <!-- https://mvnrepository.com/artifact/org.sonatype.plugins/nexus-staging-maven-plugin -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-source-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

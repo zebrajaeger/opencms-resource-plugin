@@ -21,7 +21,8 @@ public class XmlUtils {
         XPathExpression<Object> x = xFac.compile(childType);
         List<Object> children = x.evaluate(e);
         if (children.isEmpty()) {
-            String msg = String.format("there is no child with type '%s' of the name-attribute in element '%s", childType, XPathHelper.getAbsolutePath(e));
+            String msg = String.format("there is no child with type '%s' of the name-attribute in element '%s", childType, XPathHelper
+                    .getAbsolutePath(e));
             throw new IllegalArgumentException(msg);
         }
         return (Element) children.get(0);
@@ -32,7 +33,8 @@ public class XmlUtils {
         XPathExpression<Object> x = xFac.compile(childType + "[@name='" + nameAttrValue + "']");
         List<Object> children = x.evaluate(e);
         if (children.isEmpty()) {
-            String msg = String.format("there is no child '%s' with attribute 'name' and value '%s' of the name-attribute in element '%s", childType, nameAttrValue, XPathHelper.getAbsolutePath(e));
+            String msg = String.format("there is no child '%s' with attribute 'name' and value '%s' of the name-attribute in element "
+                    + "'%s", childType, nameAttrValue, XPathHelper.getAbsolutePath(e));
             throw new IllegalArgumentException(msg);
         }
         return (Element) children.get(0);
@@ -62,7 +64,8 @@ public class XmlUtils {
         try {
             return Long.parseLong(val);
         } catch (NumberFormatException ignore) {
-            String msg = String.format("attribute '%s' with value '%s' in element '%s' cannot be parsed to Long", attributeName, val, XPathHelper.getAbsolutePath(e));
+            String msg = String.format("attribute '%s' with value '%s' in element '%s' cannot be parsed to Long", attributeName, val,
+                    XPathHelper.getAbsolutePath(e));
             throw new IllegalArgumentException(msg);
         }
     }
@@ -72,7 +75,8 @@ public class XmlUtils {
         try {
             return Double.parseDouble(val);
         } catch (NumberFormatException ignore) {
-            String msg = String.format("attribute '%s' with value '%s' in element '%s' cannot be parsed to Double", attributeName, val, XPathHelper.getAbsolutePath(e));
+            String msg = String.format("attribute '%s' with value '%s' in element '%s' cannot be parsed to Double", attributeName, val,
+                    XPathHelper.getAbsolutePath(e));
             throw new IllegalArgumentException(msg);
         }
     }
@@ -82,16 +86,17 @@ public class XmlUtils {
         try {
             return Boolean.valueOf(val);
         } catch (NumberFormatException ignore) {
-            String msg = String.format("attribute '%s' with value '%s' in element '%s' cannot be parsed to Double", attributeName, val, XPathHelper.getAbsolutePath(e));
+            String msg = String.format("attribute '%s' with value '%s' in element '%s' cannot be parsed to Double", attributeName, val,
+                    XPathHelper.getAbsolutePath(e));
             throw new IllegalArgumentException(msg);
         }
     }
 
     public static void checkType(Element e, String type) {
         if (!type.equals(e.getName())) {
-            String msg = String.format("Element '%s' is wrong type. must be '%s' but is '%s'", XPathHelper.getAbsolutePath(e), type, e.getName());
+            String msg = String.format("Element '%s' is wrong type. must be '%s' but is '%s'", XPathHelper.getAbsolutePath(e), type, e
+                    .getName());
             throw new IllegalArgumentException(msg);
         }
-
     }
 }

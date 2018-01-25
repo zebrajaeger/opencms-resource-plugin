@@ -1,6 +1,5 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
-import de.zebrajaeger.opencms.resourceplugin.data.ModuleConfigResourceType;
 import org.jdom2.CDATA;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -27,7 +26,6 @@ public class VfsBundleManipulator extends XmlManipulator {
     }
 
     public Element add(String key, String value) {
-        // TODO this could be language dependent
         Element bundleElement = findSingleElement("/XmlVfsBundles/Bundle");
         Element messageElement = new Element("Message");
         bundleElement.addContent(messageElement);

@@ -13,6 +13,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 /**
  * Created by lars on 11.02.2017.
@@ -72,7 +74,11 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         checkParameters();
 
         try {
-            new ResourceCreator().createResource(this);
+            StringTokenizer st = new StringTokenizer(newResourceName, ",");
+            while (st.hasMoreTokens()) {
+                newResourceName = st.nextToken().trim();
+                new ResourceCreator().createResource(this);
+            }
         } catch (ResourceCreatorException e) {
             throw new MojoExecutionException("error while creating resource", e);
         }
@@ -84,12 +90,22 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         checkFile(manifestStub, "manifestStubFile");
         checkDirectory(vfsDir, "vfsDir");
         checkStringNotBlank(newResourceName, "newResourceName");
+        checkRecourceNameChars(newResourceName);
         checkResourceId();
 
         checkStringNotBlank(icon, "icon");
         checkStringNotBlank(bigicon, "bigicon");
         checkStringNotBlank(moduleName, "moduleName");
         checkStringOneOf(layout, "layout", true, "distributed", "resource");
+    }
+
+    private void checkRecourceNameChars(String value) throws MojoExecutionException {
+        String name = "\\s*[\\w-]+\\s*";
+        String nameList = name + "(," + name + ")*";
+        if (!Pattern.compile(nameList).matcher(value).matches()) {
+            String msg = String.format("newResourceName '%s' does not match teh pattern '%s'", value, nameList);
+            throw new MojoExecutionException(msg);
+        }
     }
 
     private void checkDirectory(File toCheck, String varName) throws MojoExecutionException {
@@ -147,7 +163,7 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     }
 
     private void checkFirstCharUppercase(String value, String name) throws MojoExecutionException {
-        if(!Character.isUpperCase(value.toCharArray()[0])){
+        if (!Character.isUpperCase(value.toCharArray()[0])) {
             String msg = String.format("First char must be uppercase in variable '%s'", name);
             throw new MojoExecutionException(msg);
         }
