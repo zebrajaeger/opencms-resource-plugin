@@ -111,11 +111,17 @@ public class FileLayout {
 
             result.directories.add(resourceRoot);
 
+            String sub = cfg.getResourceTypeSubDirectory();
+            if (StringUtils.isBlank(sub)) {
+                sub = "";
+            } else {
+                sub = "/" + sub;
+            }
             result.formatter = initFileForResourceLayout(resourceRoot, typeName, "jsp");
-            result.vfsFormatterPath = "/system/modules/" + cfg.getModuleName() + "/" + typeName + "/" + typeName + ".jsp";
+            result.vfsFormatterPath = "/system/modules/" + cfg.getModuleName() + sub + "/" + typeName + "/" + typeName + ".jsp";
             result.formatterConfig = initFileForResourceLayout(resourceRoot, typeName, "xml");
             result.schema = initFileForResourceLayout(resourceRoot, typeName, "xsd");
-            result.vfsSchemaPath = "/system/modules/" + cfg.getModuleName() + "/" + typeName + "/" + typeName + ".xsd";
+            result.vfsSchemaPath = "/system/modules/" + cfg.getModuleName() + sub + "/" + typeName + "/" + typeName + ".xsd";
             result.resourceBundle = initFileForResourceLayout(resourceRoot, cfg.getModuleName() + "." + typeName, null);
 
         } else if (cfg.getLayout() == ResourceCreatorConfig.Layout.DISTRIBUTED) {

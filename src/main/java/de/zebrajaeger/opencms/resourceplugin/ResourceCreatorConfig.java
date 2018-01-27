@@ -35,4 +35,6 @@ public interface ResourceCreatorConfig {
     String getWorkplaceBundlePath();
 
     String getWorkplacePropertiesPath();
+
+    boolean isAddResourceTypeToModuleConfig();
 }

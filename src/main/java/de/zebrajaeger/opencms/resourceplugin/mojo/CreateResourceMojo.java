@@ -4,6 +4,7 @@ import de.zebrajaeger.opencms.resourceplugin.ResourceCreator;
 import de.zebrajaeger.opencms.resourceplugin.ResourceCreatorConfig;
 import de.zebrajaeger.opencms.resourceplugin.ResourceCreatorException;
 import de.zebrajaeger.opencms.resourceplugin.namingstrategy.NamingStrategy;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.maven.plugin.AbstractMojo;
@@ -94,10 +95,17 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
 
     @SuppressWarnings("unused")
     @Parameter(
-            defaultValue = "${project.artifactId}.workplace",
+            defaultValue = "src/main/resources/workplace.properties",
             property = "workplacePropertiesPath",
             required = true)
     private String workplacePropertiesPath;
+
+    @SuppressWarnings("unused")
+    @Parameter(
+            defaultValue = "true",
+            property = "addResourceTypeToModuleConfig",
+            required = true)
+    private boolean addResourceTypeToModuleConfig;
 
     /**
      * 'distributed' or 'resource'
@@ -130,6 +138,8 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         checkRecourceNameChars(newResourceName);
         checkResourceId();
 
+        resourceTypeSubDirectory = normalizePath(resourceTypeSubDirectory);
+
         checkStringNotBlank(icon, "icon");
         checkStringNotBlank(bigicon, "bigicon");
         checkStringNotBlank(moduleName, "moduleName");
@@ -140,6 +150,14 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
 
         schemaTypeNamingStrategy = createNamingStrategyInstance(schemaTypeNamingStrategyClass);
         LOG.info("Choose name for schemaType: 'OpenCms{}'", schemaTypeNamingStrategy);
+    }
+
+    private String normalizePath(String path) {
+        if (StringUtils.isBlank(path)) {
+            return "";
+        } else {
+            return FilenameUtils.separatorsToUnix(path.trim());
+        }
     }
 
     private NamingStrategy createNamingStrategyInstance(String className) throws MojoExecutionException {
@@ -310,6 +328,11 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     public String getWorkplacePropertiesPath() {
         return workplacePropertiesPath;
     }
+
+    public boolean isAddResourceTypeToModuleConfig() {
+        return addResourceTypeToModuleConfig;
+    }
+
     //</editor-fold>
 
     public String toString() {

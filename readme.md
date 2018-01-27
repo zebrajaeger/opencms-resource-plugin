@@ -105,13 +105,31 @@ used in recourceType-schema.
 * Description: The strategy how to transform the 'newRecourceName'-Parameter to the type-name that is 
 used for filenames and for OpenCms recourceType-name.  
 
+### Parameter "workplaceBundlePath"  
+* Default value: "${project.artifactId}.workplace"   
+* Required: true
+* Description: Path to workplace VFSResourceBundle.  
+
+### Parameter "workplacePropertiesPath"  
+* Default value: "src/main/resources/workplace.properties"   
+* Required: true
+* Description: Path to workplace properties file. Alternative to the VFSResourceBundle.
+
+### Parameter "addResourceTypeToModuleConfig"  
+* Default value: "true"
+* Possible values are:
+** 'true'
+** 'false'
+* Required: true
+* Description: Add the new resourceType to the module .config file. 
+
 ## TODO
+* make module .config path modifiable 
+* change fileicon to something existing 
 * The module config may have more then one language
 ** see de.zebrajaeger.opencms.resourceplugin.ModuleConfigManipulator.add
 * The resourcebundle may have more than one language
 ** see de.zebrajaeger.opencms.resourceplugin.VfsBundleManipulator.add
-* throw exception if resourceType name already exists
-* boolean variable like 'add to module config'
 
 ## Use from commandline
 ```

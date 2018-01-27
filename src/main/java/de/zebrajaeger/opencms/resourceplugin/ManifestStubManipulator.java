@@ -80,6 +80,15 @@ public class ManifestStubManipulator extends XmlManipulator {
         return false;
     }
 
+    public boolean existsRecourceType(String resourceType) {
+        for (ExplorerType et : readExplorerTypes()) {
+            if (et.getName().equals(resourceType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addResource(String name, String vfsXsdPath, long minimumId) {
         Long id = getHighestResourceId();
         if (id == null || id < minimumId) {
@@ -87,7 +96,7 @@ public class ManifestStubManipulator extends XmlManipulator {
         }
         ++id;
 
-        LOG.info("Add resource to manifest_stub name:'{}' id:'{}'", name, id);
+        LOG.info("  Add resource to manifest_stub with name:'{}' id:'{}'", name, id);
         add(ResourceTypeResourceType.of(name, id, vfsXsdPath));
         add(ExplorerType.of(name));
     }

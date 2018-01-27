@@ -29,7 +29,7 @@ public class FileTemplateFactory {
             throw new FileAlreadyExistsException(target.getAbsolutePath());
         }
 
-        LOG.info("Create File '{}'", target);
+        LOG.info("    Create File '{}'", target);
 
         String content = generate(template);
         FileUtils.write(target, content, StandardCharsets.UTF_8);

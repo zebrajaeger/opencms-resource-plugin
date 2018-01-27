@@ -158,7 +158,7 @@ public class ExplorerTypeNewResource extends BasisType {
                 .order(XmlUtils.readDoubleAttribute(e, "order"))
                 .autosetnavigation(XmlUtils.readBooleanAttribute(e, "autosetnavigation"))
                 .autosettitle(XmlUtils.readBooleanAttribute(e, "autosettitle"))
-                .info(XmlUtils.readStringAttribute(e, "info"))
-                .key(XmlUtils.readStringAttribute(e, "key"));
+                .info(XmlUtils.tryToReadStringAttribute(e, "info"))
+                .key(XmlUtils.tryToReadStringAttribute(e, "key"));
     }
 }
