@@ -80,15 +80,18 @@ public class ManifestStubManipulator extends XmlManipulator {
         return false;
     }
 
-    public void addResource(String name, String vfsXsdPath, long minimumId) {
-        Long id = getHighestResourceId();
-        if (id == null || id < minimumId) {
-            id = minimumId;
+    public boolean existsRecourceType(String resourceType) {
+        for (ExplorerType et : readExplorerTypes()) {
+            if (et.getName().equals(resourceType)) {
+                return true;
+            }
         }
-        ++id;
+        return false;
+    }
 
-        LOG.info("Add resource to manifest_stub name:'{}' id:'{}'", name, id);
+    public void addResource(String name, String vfsXsdPath, String icon, String bigIcon, long id) {
+        LOG.info("  Add resource to manifest_stub with name:'{}' id:'{}'", name, id);
         add(ResourceTypeResourceType.of(name, id, vfsXsdPath));
-        add(ExplorerType.of(name));
+        add(ExplorerType.of(name, icon, bigIcon));
     }
 }

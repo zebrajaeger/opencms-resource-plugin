@@ -19,6 +19,7 @@ public class FileLayout {
     private File manifestStub;
     private FilePair moduleConfig;
     private FilePair workplaceBundle;
+    private File workplacePropertiesPath;
     private FilePair formatter;
     private String vfsFormatterPath;
     private FilePair formatterConfig;
@@ -26,6 +27,7 @@ public class FileLayout {
     private String vfsSchemaPath;
     private FilePair resourceBundle;
 
+    //<editor-fold desc="Getter/Setter">
     public List<FilePair> getDirectories() {
         return directories;
     }
@@ -40,6 +42,10 @@ public class FileLayout {
 
     public FilePair getWorkplaceBundle() {
         return workplaceBundle;
+    }
+
+    public File getWorkplaceProperties() {
+        return workplacePropertiesPath;
     }
 
     public FilePair getFormatter() {
@@ -65,10 +71,11 @@ public class FileLayout {
     public FilePair getResourceBundle() {
         return resourceBundle;
     }
+    //</editor-fold>
 
     public static FileLayout of(ResourceCreatorConfig cfg) {
         FileLayout result = new FileLayout();
-        String typeName = ResourceUtils.toResourceName(cfg.getNewResourceName());
+        String typeName = ResourceUtils.toResourceName(cfg.getResourceTypeName());
 
         FilePair moduleRoot = new FilePair(
                 new File(cfg.getVfsDir(), "system/modules/" + cfg.getModuleName()),
@@ -81,8 +88,10 @@ public class FileLayout {
                 new File(moduleRoot.getManifest(), ".config.ocmsfile.xml"));
 
         result.workplaceBundle = new FilePair(
-                new File(moduleRoot.getVfs(), cfg.getModuleName() + ".workplace"),
-                new File(moduleRoot.getManifest(), cfg.getModuleName() + ".workplace.ocmsfile.xml"));
+                new File(moduleRoot.getVfs(), cfg.getWorkplaceBundlePath()),
+                new File(moduleRoot.getManifest(), cfg.getWorkplaceBundlePath() + ".ocmsfile.xml"));
+
+        result.workplacePropertiesPath = new File(cfg.getWorkplacePropertiesPath());
 
         if (cfg.getLayout() == ResourceCreatorConfig.Layout.RESOURCE) {
 
@@ -102,11 +111,17 @@ public class FileLayout {
 
             result.directories.add(resourceRoot);
 
+            String sub = cfg.getResourceTypeSubDirectory();
+            if (StringUtils.isBlank(sub)) {
+                sub = "";
+            } else {
+                sub = "/" + sub;
+            }
             result.formatter = initFileForResourceLayout(resourceRoot, typeName, "jsp");
-            result.vfsFormatterPath = "/system/modules/" + cfg.getModuleName() + "/" + typeName + "/" + typeName + ".jsp";
+            result.vfsFormatterPath = "/system/modules/" + cfg.getModuleName() + sub + "/" + typeName + "/" + typeName + ".jsp";
             result.formatterConfig = initFileForResourceLayout(resourceRoot, typeName, "xml");
             result.schema = initFileForResourceLayout(resourceRoot, typeName, "xsd");
-            result.vfsSchemaPath = "/system/modules/" + cfg.getModuleName() + "/" + typeName + "/" + typeName + ".xsd";
+            result.vfsSchemaPath = "/system/modules/" + cfg.getModuleName() + sub + "/" + typeName + "/" + typeName + ".xsd";
             result.resourceBundle = initFileForResourceLayout(resourceRoot, cfg.getModuleName() + "." + typeName, null);
 
         } else if (cfg.getLayout() == ResourceCreatorConfig.Layout.DISTRIBUTED) {

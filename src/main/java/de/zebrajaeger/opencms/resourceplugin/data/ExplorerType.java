@@ -122,12 +122,12 @@ public class ExplorerType extends BasisType {
         return result;
     }
 
-    public static ExplorerType of(String name) {
+    public static ExplorerType of(String name, String icon, String bigIcon) {
         return new ExplorerType()
                 .name(name)
                 .key("fileicon." + name)
-                .icon("default.png")
-                .bigicon("default-big.png")
+                .icon(icon)
+                .bigicon(bigIcon)
                 .reference("xmlcontent")
                 .newResource(ExplorerTypeNewResource.of(name));
     }

@@ -11,9 +11,9 @@
         </Jsp>
         <Rank><![CDATA[1000]]></Rank>
         <Match>
-            <Types>
-                <ContainerType><![CDATA[content]]></ContainerType>
-            </Types>
+            <Width>
+                <Width><![CDATA[-1]]></Width>
+            </Width>
         </Match>
         <Preview>false</Preview>
         <SearchContent>true</SearchContent>

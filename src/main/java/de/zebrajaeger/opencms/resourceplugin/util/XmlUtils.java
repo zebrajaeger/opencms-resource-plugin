@@ -49,6 +49,11 @@ public class XmlUtils {
         return att.getValue();
     }
 
+    public static String tryToReadStringAttribute(Element e, String attributeName) {
+        Attribute att = e.getAttribute(attributeName);
+        return (att == null) ? null : att.getValue();
+    }
+
     public static String readStringAttributeNotBlank(Element e, String attributeName) {
         String result = readStringAttribute(e, attributeName);
         if (StringUtils.isBlank(result)) {
