@@ -5,17 +5,18 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class CamelCaseNamingStrategy extends AbstractNamingStrategy {
-    public CamelCaseNamingStrategy(String name) {
-        super(name);
+    public CamelCaseNamingStrategy(String newResourceName) {
+        super(newResourceName);
     }
 
     @Override
-    protected String convert(String name) {
+    protected String convert(String newResourceName) {
         List<String> tokens = new LinkedList<>();
 
         StringBuilder sb = new StringBuilder();
-        for (char c : name.toCharArray()) {
+        for (char c : newResourceName.toCharArray()) {
             if (c == '-' || c == '_') {
                 tokens.add(sb.toString());
                 sb.setLength(0);

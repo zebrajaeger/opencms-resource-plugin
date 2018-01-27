@@ -24,7 +24,7 @@ import java.util.Map;
 public class FileTemplateFactory {
     private static final Logger LOG = LoggerFactory.getLogger(FileTemplateFactory.class);
 
-    public void writeToFileFile(FileTemplate template, File target) throws FileTemplateFactoryException, IOException {
+    public void writeToFile(FileTemplate template, File target) throws FileTemplateFactoryException, IOException {
         if (target.exists()) {
             throw new FileAlreadyExistsException(target.getAbsolutePath());
         }

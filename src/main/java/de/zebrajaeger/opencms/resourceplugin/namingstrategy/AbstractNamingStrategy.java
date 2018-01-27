@@ -8,7 +8,7 @@ public abstract class AbstractNamingStrategy implements NamingStrategy {
         this.name = name;
     }
 
-    protected abstract String convert(String name);
+    protected abstract String convert(String newResourceName);
 
     @Override
     public String getConvertedName() {

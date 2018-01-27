@@ -3,6 +3,7 @@ package de.zebrajaeger.opencms.resourceplugin.mojo;
 import de.zebrajaeger.opencms.resourceplugin.ResourceCreator;
 import de.zebrajaeger.opencms.resourceplugin.ResourceCreatorConfig;
 import de.zebrajaeger.opencms.resourceplugin.ResourceCreatorException;
+import de.zebrajaeger.opencms.resourceplugin.namingstrategy.NamingStrategy;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.maven.plugin.AbstractMojo;
@@ -11,8 +12,12 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -22,6 +27,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 @Mojo(name = "createResource", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorConfig {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CreateResourceMojo.class);
 
     @SuppressWarnings("unused")
     @Parameter(defaultValue = "${project.basedir}/src/main/opencms/manifest", property = "manifestDir", required = true)
@@ -62,6 +69,23 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     @Parameter(defaultValue = "ce", property = "resourceTypeSubDirectory", required = true)
     private String resourceTypeSubDirectory;
 
+    @SuppressWarnings("unused")
+    @Parameter(
+            defaultValue = "de.zebrajaeger.opencms.resourceplugin.namingstrategy.CamelCaseNamingStrategy",
+            property = "schemaTypeNamingStrategyClass",
+            required = true)
+    private String schemaTypeNamingStrategyClass;
+    private NamingStrategy schemaTypeNamingStrategy;
+
+    @SuppressWarnings("unused")
+    @Parameter(
+            defaultValue = "de.zebrajaeger.opencms.resourceplugin.namingstrategy.LowerCaseWithHyphenNamingStrategy",
+            property = "resourceTypeNamingStrategyClass",
+            required = true)
+    private String resourceTypeNamingStrategyClass;
+    private NamingStrategy resourceTypeNamingStrategy;
+
+
     /**
      * 'distributed' or 'resource'
      */
@@ -71,7 +95,7 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        checkParameters();
+        checkAndConvertParameters();
 
         try {
             StringTokenizer st = new StringTokenizer(newResourceName, ",");
@@ -84,7 +108,7 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         }
     }
 
-    private void checkParameters() throws MojoExecutionException {
+    private void checkAndConvertParameters() throws MojoExecutionException {
         checkDirectory(manifestDir, "manifestDir");
         File manifestStub = new File(manifestDir, manifestStubFile);
         checkFile(manifestStub, "manifestStubFile");
@@ -97,6 +121,28 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         checkStringNotBlank(bigicon, "bigicon");
         checkStringNotBlank(moduleName, "moduleName");
         checkStringOneOf(layout, "layout", true, "distributed", "resource");
+
+        resourceTypeNamingStrategy = createNamingStrategyInstance(resourceTypeNamingStrategyClass);
+        LOG.info("Choose name for resourceType: '{}'", resourceTypeNamingStrategy);
+
+        schemaTypeNamingStrategy = createNamingStrategyInstance(schemaTypeNamingStrategyClass);
+        LOG.info("Choose name for schemaType: 'OpenCms{}'", schemaTypeNamingStrategy);
+    }
+
+    private NamingStrategy createNamingStrategyInstance(String className) throws MojoExecutionException {
+        try {
+            Class<NamingStrategy> clazz = (Class<NamingStrategy>) Class.forName(className);
+            Constructor<NamingStrategy> constructor = clazz.getConstructor(String.class);
+            return constructor.newInstance(getNewResourceName());
+        } catch (ClassNotFoundException
+                | IllegalAccessException
+                | InstantiationException
+                | ClassCastException
+                | NoSuchMethodException
+                | InvocationTargetException e) {
+            String msg = String.format("Can not create instance of class '%'.", className);
+            throw new MojoExecutionException(msg, e);
+        }
     }
 
     private void checkRecourceNameChars(String value) throws MojoExecutionException {
@@ -187,6 +233,17 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         }
     }
 
+    @Override
+    public String getResourceSchemaName() {
+        return schemaTypeNamingStrategy.getConvertedName();
+    }
+
+    @Override
+    public String getResourceTypeName() {
+        return resourceTypeNamingStrategy.getConvertedName();
+    }
+
+    //<editor-fold desc="Getter/Setter">
     public File getManifestDir() {
         return manifestDir;
     }
@@ -230,4 +287,5 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
+    //</editor-fold>
 }

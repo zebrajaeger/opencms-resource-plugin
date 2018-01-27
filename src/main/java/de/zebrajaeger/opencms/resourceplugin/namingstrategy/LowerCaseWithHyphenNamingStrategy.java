@@ -1,14 +1,15 @@
 package de.zebrajaeger.opencms.resourceplugin.namingstrategy;
 
+@SuppressWarnings("unused")
 public class LowerCaseWithHyphenNamingStrategy extends AbstractNamingStrategy {
-    public LowerCaseWithHyphenNamingStrategy(String name) {
-        super(name);
+    public LowerCaseWithHyphenNamingStrategy(String newResourceName) {
+        super(newResourceName);
     }
 
     @Override
-    protected String convert(String name) {
+    protected String convert(String newResourceName) {
         StringBuilder sb = new StringBuilder();
-        for (char c : name.toCharArray()) {
+        for (char c : newResourceName.toCharArray()) {
             if (Character.isUpperCase(c)) {
                 sb.append("-");
                 sb.append(Character.toLowerCase(c));

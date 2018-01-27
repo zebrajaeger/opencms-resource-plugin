@@ -31,7 +31,7 @@ public class ResourceCreator {
 
     public void createResource(ResourceCreatorConfig cfg) throws ResourceCreatorException {
         FileLayout files = FileLayout.of(cfg);
-        String typeName = ResourceUtils.toResourceName(cfg.getNewResourceName());
+        String typeName = ResourceUtils.toResourceName(cfg.getResourceTypeName());
 
         LOG.info("create resources");
 
@@ -46,14 +46,14 @@ public class ResourceCreator {
             LOG.info("create formatter");
             createFile(
                     files.getFormatter(),
-                    new FormatterTemplate(cfg.getNewResourceName()),
+                    new FormatterTemplate(cfg.getResourceTypeName()),
                     ResourceType.JSP);
 
             // formatter config
             LOG.info("create formatter config");
             createFile(
                     files.getFormatterConfig(),
-                    new FormatterConfigTemplate(cfg.getNewResourceName(), files.getVfsFormatterPath()),
+                    new FormatterConfigTemplate(cfg.getResourceTypeName(), files.getVfsFormatterPath()),
                     ResourceType.FORMATTER_CONFIG);
 
             // schema
@@ -61,14 +61,14 @@ public class ResourceCreator {
             String bundleName = cfg.getModuleName() + "." + typeName;
             createFile(
                     files.getSchema(),
-                    new SchemaTemplate(cfg.getNewResourceName(), bundleName),
+                    new SchemaTemplate(cfg.getResourceSchemaName(), bundleName),
                     ResourceType.PLAIN);
 
             // bundles
             LOG.info("create resource bundle");
             createFile(
                     files.getResourceBundle(),
-                    new BundleTemplate(cfg.getNewResourceName()),
+                    new BundleTemplate(cfg.getResourceSchemaName()),
                     ResourceType.XMLVFSBUNDLE);
 
             // manifest Stub
@@ -93,17 +93,23 @@ public class ResourceCreator {
             IOException, JDOMException {
         if (!files.getWorkplaceBundle().getVfs().exists()) {
             LOG.debug("Workplace bundle does not exist -> create");
-            createFile(files.getWorkplaceBundle(), new WorkplaceBundleTemplate(cfg.getNewResourceName()), ResourceType.XMLVFSBUNDLE);
+            createFile(files.getWorkplaceBundle(), new WorkplaceBundleTemplate(typeName), ResourceType.XMLVFSBUNDLE);
         }
 
         LOG.info("Add new resourceType to workplace bundle");
         VfsBundleManipulator vfsBundleManipulator = new VfsBundleManipulator(files.getWorkplaceBundle().getVfs());
-        LOG.info("   Add fileicon: '{}'", cfg.getNewResourceName());
-        vfsBundleManipulator.add("fileicon." + typeName, cfg.getNewResourceName());
+
+        // fileicon
+        LOG.info("   Add fileicon: '{}'", typeName);
+        vfsBundleManipulator.add("fileicon." + typeName, cfg.getResourceSchemaName());
+
+        // desc
         LOG.info("   Add desc: '{}'", typeName);
         vfsBundleManipulator.add("desc." + typeName, typeName);
-        LOG.info("   Add title: '{}'", cfg.getNewResourceName());
-        vfsBundleManipulator.add("title." + typeName, cfg.getNewResourceName());
+
+        // title
+        LOG.info("   Add title: '{}'", typeName);
+        vfsBundleManipulator.add("title." + typeName, typeName);
         FileUtils.write(files.getWorkplaceBundle().getVfs(), vfsBundleManipulator.toString(), StandardCharsets.UTF_8);
     }
 
@@ -155,10 +161,10 @@ public class ResourceCreator {
         FileTemplateFactory factory = new FileTemplateFactory();
 
         files.getVfs().getParentFile().mkdirs();
-        factory.writeToFileFile(template, files.getVfs());
+        factory.writeToFile(template, files.getVfs());
 
         files.getManifest().getParentFile().mkdirs();
-        factory.writeToFileFile(new OcmsFileTemplate(resourceType.getName()), files.getManifest());
+        factory.writeToFile(new OcmsFileTemplate(resourceType.getName()), files.getManifest());
     }
 
     private void createDirectory(String resourceTypeName, FilePair files) throws FileTemplateFactoryException, IOException {
@@ -180,7 +186,7 @@ public class ResourceCreator {
         File manifestFile = new File(files.getManifest().getParent(), resourceTypeName + ".ocmsfolder.xml");
         if (!manifestFile.exists()) {
             LOG.info("Create OCMSFOLDER file '{}'", manifestFile.getAbsolutePath());
-            factory.writeToFileFile(new OcmsFolderTemplate(), manifestFile);
+            factory.writeToFile(new OcmsFolderTemplate(), manifestFile);
         }
     }
 }

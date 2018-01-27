@@ -6,7 +6,7 @@ import java.io.File;
  * Created by lars on 12.02.2017.
  */
 public interface ResourceCreatorConfig {
-    enum Layout{
+    enum Layout {
         DISTRIBUTED, RESOURCE
     }
 
@@ -16,7 +16,9 @@ public interface ResourceCreatorConfig {
 
     File getVfsDir();
 
-    String getNewResourceName();
+    String getResourceSchemaName();
+
+    String getResourceTypeName();
 
     String getResourceId();
 

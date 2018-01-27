@@ -68,7 +68,7 @@ public class FileLayout {
 
     public static FileLayout of(ResourceCreatorConfig cfg) {
         FileLayout result = new FileLayout();
-        String typeName = ResourceUtils.toResourceName(cfg.getNewResourceName());
+        String typeName = ResourceUtils.toResourceName(cfg.getResourceTypeName());
 
         FilePair moduleRoot = new FilePair(
                 new File(cfg.getVfsDir(), "system/modules/" + cfg.getModuleName()),

@@ -5,32 +5,32 @@ Scaffolding plugin for an easy way to add a new resourceType to your OpenCms pro
 
 ## Configuration options
 
-### Variable "manifestDir"   
+### Parameter "manifestDir"   
 * Default value: "${project.basedir}/src/main/opencms/manifest"   
 * Required: true   
 * Type: java.io.File   
 * Description: Path to manifest root directory.
 
-### Variable "manifestStubFile"   
+### Parameter "manifestStubFile"   
 * Default value : "manifest_stub.xml"   
 * Required: true    
 * Type: java.lang.String   
 * Description: File name of manifest stub file.
 
-### Variable "vfsDir"  
+### Parameter "vfsDir"  
 * Default value: "${project.basedir}/src/main/opencms/vfs"   
 * Required: true   
 * Type: java.io.File   
 * Description: Path to vfs root directory.
 
-### Variable"newResourceName"  
+### Parameter"newResourceName"  
 * Default value: no default value   
 * Required: true   
 * Type: java.lang.String   
 * Description: The name of the new resourceType. Multible values are supported as a comma-separated list of resource-type-names. 
 In this case the 'resourceId'-variable should be 'auto'.
 
-### Variable"resourceId"  
+### Parameter"resourceId"  
 * Default value: "auto"   
 * Required: true   
 * Type: java.lang.String   
@@ -38,21 +38,21 @@ In this case the 'resourceId'-variable should be 'auto'.
 * Description: The id of the new resourceType. "Auto" looks for other resources in the manifest_Stub file 
 and takes the highest resourceId +1 for the new resourceId.  
 
-### Variable"icon"  
+### Parameter"icon"  
 * Default value: "default.png"   
 * Required: true   
 * Type: java.lang.String   
 * Description: The small icon for the new resourceType. 
 These icons resides in vfs path "/system/workplace/resources/filetypes/".
 
-### Variable"bigicon"  
+### Parameter"bigicon"  
 * Default value: "default-big.png"   
 * Required: true   
 * Type: java.lang.String   
 * Description: The big icon for the new resourceType. 
 These icons resides in vfs path "/system/workplace/resources/filetypes/".
 
-### Variable: "moduleName"  
+### Parameter: "moduleName"  
 * Default value: "${project.artifactId}"   
 * Required: true   
 * Description: The name of the OpenCms Module. With this value generates the plugin the path 
@@ -60,7 +60,7 @@ from manifest/vfs directory to the module root.
 * Example: the module path is "/system/modules/de.ikk.classic.cms.template/" 
 then the moduleName must be "de.ikk.classic.cms.template"  .
 
-### Variable "layout"  
+### Parameter "layout"  
 * Default value: "resource"   
 * Required: true   
 * Type: de.zebrajaeger.opencms.resourceplugin.ResourceCreatorConfig    
@@ -69,7 +69,7 @@ then the moduleName must be "de.ikk.classic.cms.template"  .
 in the same directory which name is the resource name. The value "DISTRIBUTED" let us create all the new 
 files in different directories (schema in "schemas", bundle in "i18n", formatter and formatter config in "formatters"")  
 
-### Variable "resourceTypeSubDirectory"  
+### Parameter "resourceTypeSubDirectory"  
 * Default value: "ce"   
 * Required: true   
 * Description: If variable "layout" is set to "RESOURCE" and this value is set, the new resourcetype 
@@ -79,6 +79,32 @@ with the name of this variable. The folder of the new resourceType is created wi
 The "moduleName" is "my.opencms.module". All the new files a created in vfs/manifest are in the folder 
 "/system/modules/my.opencms.module/ce/foo/". To prevent create a additional subfolder, set this value to "" (empty string).
 
+### Parameter "schemaTypeNamingStrategyClass"  
+* Default value: "de.zebrajaeger.opencms.resourceplugin.namingstrategy.CamelCaseNamingStrategy"   
+* Required: true
+* Possible values are
+** 'de.zebrajaeger.opencms.resourceplugin.namingstrategy.CamelCaseNamingStrategy'
+** 'de.zebrajaeger.opencms.resourceplugin.namingstrategy.LowerCaseWithHyphenNamingStrategy'
+** 'de.zebrajaeger.opencms.resourceplugin.namingstrategy.PassThroughNamingStrategy'
+** or any other self implemented naming-strategy that derives from 'de
+                                                                    .zebrajaeger.opencms.resourceplugin
+                                                                    .namingstrategy.NamingStrategy'   
+* Description: The strategy how to transform the 'newRecourceName'-Parameter to the type-name that is 
+used in recourceType-schema.  
+
+### Parameter "resourceTypeNamingStrategyClass"  
+* Default value: "de.zebrajaeger.opencms.resourceplugin.namingstrategy.LowerCaseWithHyphenNamingStrategy"   
+* Required: true
+* Possible values are
+** 'de.zebrajaeger.opencms.resourceplugin.namingstrategy.CamelCaseNamingStrategy'
+** 'de.zebrajaeger.opencms.resourceplugin.namingstrategy.LowerCaseWithHyphenNamingStrategy'
+** 'de.zebrajaeger.opencms.resourceplugin.namingstrategy.PassThroughNamingStrategy'
+** or any other self implemented naming-strategy that derives from 'de
+                                                                    .zebrajaeger.opencms.resourceplugin
+                                                                    .namingstrategy.NamingStrategy'   
+* Description: The strategy how to transform the 'newRecourceName'-Parameter to the type-name that is 
+used for filenames and for OpenCms recourceType-name.  
+
 ## TODO
 * check that a name does not start wit a number, minus or underscore
 * The module config may have more then one language
@@ -86,6 +112,7 @@ The "moduleName" is "my.opencms.module". All the new files a created in vfs/mani
 * The resourcebundle may have more than one language
 ** see de.zebrajaeger.opencms.resourceplugin.VfsBundleManipulator.add
 * throw exception if resourceType name already exists
+* boolean variable 'add to module config'
 
 ## Use from commandline
 ```
