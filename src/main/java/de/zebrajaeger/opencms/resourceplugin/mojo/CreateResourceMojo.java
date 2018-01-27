@@ -85,6 +85,19 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     private String resourceTypeNamingStrategyClass;
     private NamingStrategy resourceTypeNamingStrategy;
 
+    @SuppressWarnings("unused")
+    @Parameter(
+                defaultValue = "${project.artifactId}.workplace",
+            property = "workplaceBundlePath",
+            required = true)
+    private String workplaceBundlePath;
+
+    @SuppressWarnings("unused")
+    @Parameter(
+            defaultValue = "${project.artifactId}.workplace",
+            property = "workplacePropertiesPath",
+            required = true)
+    private String workplacePropertiesPath;
 
     /**
      * 'distributed' or 'resource'
@@ -284,8 +297,17 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         return resourceTypeSubDirectory;
     }
 
+    public String getWorkplaceBundlePath() {
+        return workplaceBundlePath;
+    }
+
+    @Override
+    public String getWorkplacePropertiesPath() {
+        return workplacePropertiesPath;
+    }
+    //</editor-fold>
+
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
-    //</editor-fold>
 }

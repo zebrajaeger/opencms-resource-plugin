@@ -19,6 +19,7 @@ public class FileLayout {
     private File manifestStub;
     private FilePair moduleConfig;
     private FilePair workplaceBundle;
+    private File workplacePropertiesPath;
     private FilePair formatter;
     private String vfsFormatterPath;
     private FilePair formatterConfig;
@@ -26,6 +27,7 @@ public class FileLayout {
     private String vfsSchemaPath;
     private FilePair resourceBundle;
 
+    //<editor-fold desc="Getter/Setter">
     public List<FilePair> getDirectories() {
         return directories;
     }
@@ -40,6 +42,10 @@ public class FileLayout {
 
     public FilePair getWorkplaceBundle() {
         return workplaceBundle;
+    }
+
+    public File getWorkplaceProperties() {
+        return workplacePropertiesPath;
     }
 
     public FilePair getFormatter() {
@@ -65,6 +71,7 @@ public class FileLayout {
     public FilePair getResourceBundle() {
         return resourceBundle;
     }
+    //</editor-fold>
 
     public static FileLayout of(ResourceCreatorConfig cfg) {
         FileLayout result = new FileLayout();
@@ -81,8 +88,10 @@ public class FileLayout {
                 new File(moduleRoot.getManifest(), ".config.ocmsfile.xml"));
 
         result.workplaceBundle = new FilePair(
-                new File(moduleRoot.getVfs(), cfg.getModuleName() + ".workplace"),
-                new File(moduleRoot.getManifest(), cfg.getModuleName() + ".workplace.ocmsfile.xml"));
+                new File(moduleRoot.getVfs(), cfg.getWorkplaceBundlePath()),
+                new File(moduleRoot.getManifest(), cfg.getWorkplaceBundlePath() + ".ocmsfile.xml"));
+
+        result.workplacePropertiesPath = new File(cfg.getWorkplacePropertiesPath());
 
         if (cfg.getLayout() == ResourceCreatorConfig.Layout.RESOURCE) {
 

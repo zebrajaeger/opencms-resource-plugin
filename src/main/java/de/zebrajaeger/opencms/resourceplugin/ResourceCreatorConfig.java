@@ -31,4 +31,8 @@ public interface ResourceCreatorConfig {
     Layout getLayout();
 
     String getResourceTypeSubDirectory();
+
+    String getWorkplaceBundlePath();
+
+    String getWorkplacePropertiesPath();
 }

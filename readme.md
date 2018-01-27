@@ -154,3 +154,26 @@ add to pom.xml
 <!-- ... -->
 </project>
 ```
+## Development
+
+For fast building without building javadoc, sources, signing and all the 
+deployment stuff execute
+```
+mvn clean install -Pdevelop
+```
+
+If you don't like unit-test you may prefer the fastest way:
+```
+mvn clean install -Pdevelop -DskipTests
+```
+
+If you fork this and deploy it on maven central via sonatype OSS
+you need pgp in your path (on windows i use cygwin) and a key pair.   
+The public key must be published on a public key server.   
+If you fulfill these requirements, a deployment is easy but the version 
+cannnot be a x.x.x-SNAPSHOT version. It has to be a release version number 
+(without the -SNAPSHOT postfix).    
+Than execute this command line call:
+```
+mvn clean deploy
+```

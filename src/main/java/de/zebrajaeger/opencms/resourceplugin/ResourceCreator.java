@@ -89,28 +89,57 @@ public class ResourceCreator {
         }
     }
 
-    private void modifyWorkplaceBundle(ResourceCreatorConfig cfg, FileLayout files, String typeName) throws FileTemplateFactoryException,
+    private void modifyWorkplaceBundle(
+            ResourceCreatorConfig cfg,
+            FileLayout files,
+            String typeName) throws FileTemplateFactoryException,
             IOException, JDOMException {
-        if (!files.getWorkplaceBundle().getVfs().exists()) {
-            LOG.debug("Workplace bundle does not exist -> create");
-            createFile(files.getWorkplaceBundle(), new WorkplaceBundleTemplate(typeName), ResourceType.XMLVFSBUNDLE);
+
+        // exists vfsbundle?
+        boolean useVfsBundle = files.getWorkplaceBundle().getVfs().exists();
+        LOG.info("Workplace bundle does not exists '{}'", files.getWorkplaceBundle().getVfs().getAbsolutePath());
+
+        // no. exists workplace.properties? no -> create and use vfsbundle
+
+        if (!useVfsBundle) {
+            if (files.getWorkplaceProperties().exists()) {
+                LOG.info("Found workplace.properties -> so we use it");
+            } else {
+                LOG.info("Workplace properties does not exist '{}'", files.getWorkplaceProperties().getAbsolutePath());
+                LOG.info("   -> Create and use workplace bundle");
+                createFile(files.getWorkplaceBundle(), new WorkplaceBundleTemplate(typeName), ResourceType.XMLVFSBUNDLE);
+                useVfsBundle = true;
+            }
         }
 
-        LOG.info("Add new resourceType to workplace bundle");
-        VfsBundleManipulator vfsBundleManipulator = new VfsBundleManipulator(files.getWorkplaceBundle().getVfs());
+        if (useVfsBundle) {
+            LOG.info("Add new resourceType to workplace bundle");
+            LOG.info("   Add fileicon: '{}'", typeName);
+            LOG.info("   Add desc: '{}'", typeName);
+            LOG.info("   Add title: '{}'", typeName);
 
-        // fileicon
-        LOG.info("   Add fileicon: '{}'", typeName);
-        vfsBundleManipulator.add("fileicon." + typeName, cfg.getResourceSchemaName());
+            VfsBundleManipulator vfsBundleManipulator = new VfsBundleManipulator(files.getWorkplaceBundle().getVfs());
 
-        // desc
-        LOG.info("   Add desc: '{}'", typeName);
-        vfsBundleManipulator.add("desc." + typeName, typeName);
+            vfsBundleManipulator.add("fileicon." + typeName, cfg.getResourceSchemaName());
+            vfsBundleManipulator.add("desc." + typeName, typeName);
+            vfsBundleManipulator.add("title." + typeName, typeName);
 
-        // title
-        LOG.info("   Add title: '{}'", typeName);
-        vfsBundleManipulator.add("title." + typeName, typeName);
-        FileUtils.write(files.getWorkplaceBundle().getVfs(), vfsBundleManipulator.toString(), StandardCharsets.UTF_8);
+            FileUtils.write(files.getWorkplaceBundle().getVfs(), vfsBundleManipulator.toString(), StandardCharsets.UTF_8);
+        } else {
+            LOG.info("Add new resourceType to workplace-properties");
+            LOG.info("   Add fileicon: '{}'", typeName);
+            LOG.info("   Add desc: '{}'", typeName);
+            LOG.info("   Add title: '{}'", typeName);
+            PropertiesFileManipulator pfm = new PropertiesFileManipulator(files.getWorkplaceProperties());
+
+            pfm.addEmptyLine();
+            pfm.addComment(typeName);
+            pfm.add("fileicon." + typeName, cfg.getResourceSchemaName());
+            pfm.add("desc." + typeName, typeName);
+            pfm.add("title." + typeName, typeName);
+
+            pfm.save();
+        }
     }
 
     private void modifyModuleConfig(FileLayout files, String typeName) throws FileTemplateFactoryException, IOException, JDOMException {
