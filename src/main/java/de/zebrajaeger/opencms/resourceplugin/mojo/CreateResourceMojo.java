@@ -87,7 +87,7 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
 
     @SuppressWarnings("unused")
     @Parameter(
-                defaultValue = "${project.artifactId}.workplace",
+            defaultValue = "${project.artifactId}.workplace",
             property = "workplaceBundlePath",
             required = true)
     private String workplaceBundlePath;
@@ -158,11 +158,16 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         }
     }
 
+    /**
+     * comma separated list of names that can contain word-characters and minus-chars. Except fist char that can be 'a'...'z' and 'A'...'Z'.
+     *
+     * @throws MojoExecutionException
+     */
     private void checkRecourceNameChars(String value) throws MojoExecutionException {
-        String name = "\\s*[\\w-]+\\s*";
+        String name = "\\s*[a-zA-Z][\\w-]+\\s*";
         String nameList = name + "(," + name + ")*";
         if (!Pattern.compile(nameList).matcher(value).matches()) {
-            String msg = String.format("newResourceName '%s' does not match teh pattern '%s'", value, nameList);
+            String msg = String.format("newResourceName '%s' does not match the pattern '%s'", value, nameList);
             throw new MojoExecutionException(msg);
         }
     }

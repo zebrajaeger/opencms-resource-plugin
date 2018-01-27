@@ -106,13 +106,12 @@ used in recourceType-schema.
 used for filenames and for OpenCms recourceType-name.  
 
 ## TODO
-* check that a name does not start wit a number, minus or underscore
 * The module config may have more then one language
 ** see de.zebrajaeger.opencms.resourceplugin.ModuleConfigManipulator.add
 * The resourcebundle may have more than one language
 ** see de.zebrajaeger.opencms.resourceplugin.VfsBundleManipulator.add
 * throw exception if resourceType name already exists
-* boolean variable 'add to module config'
+* boolean variable like 'add to module config'
 
 ## Use from commandline
 ```
