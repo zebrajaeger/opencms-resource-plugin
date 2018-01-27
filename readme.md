@@ -39,14 +39,14 @@ In this case the 'resourceId'-variable should be 'auto'.
 and takes the highest resourceId +1 for the new resourceId.  
 
 ### Parameter"icon"  
-* Default value: "default.png"   
+* Default value: "plain.png"   
 * Required: true   
 * Type: java.lang.String   
 * Description: The small icon for the new resourceType. 
 These icons resides in vfs path "/system/workplace/resources/filetypes/".
 
 ### Parameter"bigicon"  
-* Default value: "default-big.png"   
+* Default value: "plain_big.png"   
 * Required: true   
 * Type: java.lang.String   
 * Description: The big icon for the new resourceType. 
@@ -125,7 +125,6 @@ used for filenames and for OpenCms recourceType-name.
 
 ## TODO
 * make module .config path modifiable 
-* change fileicon to something existing 
 * The module config may have more then one language
 ** see de.zebrajaeger.opencms.resourceplugin.ModuleConfigManipulator.add
 * The resourcebundle may have more than one language

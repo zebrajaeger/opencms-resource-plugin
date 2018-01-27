@@ -194,7 +194,7 @@ public class ResourceCreator {
             LOG.info("  Choose minimum resourceID for new resource: '{}'", resourceIdValue);
         }
 
-        manifestStubManipulator.addResource(typeName, files.getVfsSchemaPath(), resourceIdValue);
+        manifestStubManipulator.addResource(typeName, files.getVfsSchemaPath(), cfg.getIcon(), cfg.getBigicon(), resourceIdValue);
         FileUtils.write(files.getManifestStub(), manifestStubManipulator.toString(), StandardCharsets.UTF_8);
     }
 

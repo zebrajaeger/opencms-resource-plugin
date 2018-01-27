@@ -89,15 +89,9 @@ public class ManifestStubManipulator extends XmlManipulator {
         return false;
     }
 
-    public void addResource(String name, String vfsXsdPath, long minimumId) {
-        Long id = getHighestResourceId();
-        if (id == null || id < minimumId) {
-            id = minimumId;
-        }
-        ++id;
-
+    public void addResource(String name, String vfsXsdPath, String icon, String bigIcon, long id) {
         LOG.info("  Add resource to manifest_stub with name:'{}' id:'{}'", name, id);
         add(ResourceTypeResourceType.of(name, id, vfsXsdPath));
-        add(ExplorerType.of(name));
+        add(ExplorerType.of(name, icon, bigIcon));
     }
 }

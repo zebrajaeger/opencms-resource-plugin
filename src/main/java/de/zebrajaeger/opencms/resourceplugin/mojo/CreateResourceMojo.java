@@ -55,11 +55,11 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     private String resourceId;
 
     @SuppressWarnings("unused")
-    @Parameter(defaultValue = "default.png", property = "icon", required = true)
+    @Parameter(defaultValue = "plain.png", property = "icon", required = true)
     private String icon;
 
     @SuppressWarnings("unused")
-    @Parameter(defaultValue = "default-big.png", property = "bigicon", required = true)
+    @Parameter(defaultValue = "plain_big.png", property = "bigicon", required = true)
     private String bigicon;
 
     @SuppressWarnings("unused")
