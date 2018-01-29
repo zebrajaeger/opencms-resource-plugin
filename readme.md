@@ -1,4 +1,4 @@
-# Maven OpenCms Reource Plugin
+# Maven OpenCms Resource Plugin
 
 Scaffolding plugin for an easy way to add a new resourceType to your OpenCms project that uses 
 [the mediaworx berlin AG openCms Plugin for Maven](http://opencms.mediaworx.com/de/opencms-tools/).   
