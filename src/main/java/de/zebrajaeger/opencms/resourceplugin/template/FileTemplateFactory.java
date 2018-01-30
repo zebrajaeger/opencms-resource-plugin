@@ -1,6 +1,7 @@
 package de.zebrajaeger.opencms.resourceplugin.template;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean2;
+import org.apache.commons.beanutils.Converter;
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -45,9 +46,9 @@ public class FileTemplateFactory {
             Template t = ve.getTemplate(template.getTemplate());
             VelocityContext context = new VelocityContext();
 
-            Map<String, String> m = BeanUtils.describe(template);
-            for (Object key : m.keySet()) {
-                context.put(key.toString(), m.get(key));
+            Map<String, Object> m = BeanUtilsBean2.getInstance().getPropertyUtils().describe(template);
+            for (Map.Entry<String, Object> e : m.entrySet()) {
+                context.put(e.getKey(), e.getValue());
             }
 
             StringWriter writer = new StringWriter();

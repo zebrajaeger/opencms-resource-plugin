@@ -2,30 +2,19 @@
 
 <NewFormatters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/new_formatter.xsd">
     <NewFormatter language="en">
-        <NiceName><![CDATA[Formatter for ${name}]]></NiceName>
-        <Type><![CDATA[${resourcename}]]></Type>
+        <NiceName><![CDATA[Formatter for foo-bar]]></NiceName>
+        <Type><![CDATA[foo-bar]]></Type>
         <Jsp>
             <link type="WEAK">
-                <target><![CDATA[${formatterpath}]]></target>
+                <target><![CDATA[/foo-bar.jsp]]></target>
             </link>
         </Jsp>
         <Rank><![CDATA[1000]]></Rank>
-#if($matchWidth)
         <Match>
             <Width>
-                <Width><![CDATA[$matchWidth]]></Width>
+                <Width><![CDATA[-1]]></Width>
             </Width>
         </Match>
-#end
-#if($matchTypes)
-        <Match>
-            <Types>
-    #foreach($matchType in $matchTypes)
-                <ContainerType><![CDATA[${matchType}]]></ContainerType>
-    #end
-            </Types>
-        </Match>
-#end
         <Preview>false</Preview>
         <SearchContent>true</SearchContent>
         <AutoEnabled>true</AutoEnabled>

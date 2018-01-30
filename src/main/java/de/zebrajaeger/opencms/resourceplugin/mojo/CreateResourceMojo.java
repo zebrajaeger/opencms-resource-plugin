@@ -19,7 +19,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -114,6 +117,12 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     @Parameter(defaultValue = "resource", property = "layout", required = true)
     private String layout;
 
+    @SuppressWarnings("unused")
+    @Parameter(defaultValue = "width:-1", property = "match", required = true)
+    private String match;
+    private List<String> matchTypes;
+    private Integer matchWidth;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         checkAndConvertParameters();
@@ -150,6 +159,40 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
 
         schemaTypeNamingStrategy = createNamingStrategyInstance(schemaTypeNamingStrategyClass);
         LOG.info("Choose name for schemaType: 'OpenCms{}'", schemaTypeNamingStrategy);
+
+        boolean hasMatch = false;
+        String typePatternString = "\\s*types\\s*:\\s*([\\w-]+\\s*(?:,\\s*[\\w-]+\\s*)*)";
+        Matcher typeMatcher = Pattern.compile(typePatternString).matcher(match);
+        if (typeMatcher.matches()) {
+            StringTokenizer st = new StringTokenizer(typeMatcher.group(1), ",");
+            matchTypes = new LinkedList<>();
+            while (st.hasMoreTokens()) {
+                matchTypes.add(st.nextToken().trim());
+                hasMatch = true;
+            }
+            LOG.info("choose match = types(" + matchTypes + ")");
+        }
+
+        String widthPatternString = "\\s*width\\s*:\\s*(-?\\d*)\\s*";
+        Matcher widthMatcher = Pattern.compile(widthPatternString).matcher(match);
+        if (widthMatcher.matches()) {
+            String widthString = widthMatcher.group(1).trim();
+            try {
+                matchWidth = Integer.parseInt(widthString);
+            } catch (NumberFormatException e) {
+                throw new MojoExecutionException("Could not parse width-match in '"
+                        + match
+                        + "'. Valid pattern is '\\s*width\\s*:\\s*(-?\\d*)\\s*'");
+            }
+            LOG.info("choose match = width(" + matchWidth + ")");
+            hasMatch = true;
+        }
+
+        if (!hasMatch) {
+            throw new MojoExecutionException("Could not parse width-match and type-match in '"
+                    + match
+                    + "'. Valid patterns are '\\s*width\\s*:\\s*(-?\\d*)\\s*' and '\\s*types\\s*:\\s*([\\w-]+\\s*(?:,\\s*[\\w-]+\\s*)*)'");
+        }
     }
 
     private String normalizePath(String path) {
@@ -333,6 +376,15 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         return addResourceTypeToModuleConfig;
     }
 
+    @Override
+    public List<String> getTypesMatch() {
+        return matchTypes;
+    }
+
+    @Override
+    public Integer getWidthMatch() {
+        return matchWidth;
+    }
     //</editor-fold>
 
     public String toString() {

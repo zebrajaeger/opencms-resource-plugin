@@ -123,6 +123,14 @@ used for filenames and for OpenCms recourceType-name.
 * Required: true
 * Description: Add the new resourceType to the module .config file. 
 
+### Parameter "match"  
+* Default value: "width:-1"
+* Possible values are:
+** width:<Integer value>
+** types:&lt;container type 1&gt;,&lt;container type 2&gt;, ...
+* Required: true
+* Description: The container type(s) or width where the new Element can be put in. 
+
 ## TODO
 * make module .config path modifiable 
 * The module config may have more then one language

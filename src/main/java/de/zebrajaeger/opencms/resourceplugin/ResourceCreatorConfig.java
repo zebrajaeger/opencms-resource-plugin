@@ -1,6 +1,7 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by lars on 12.02.2017.
@@ -37,4 +38,8 @@ public interface ResourceCreatorConfig {
     String getWorkplacePropertiesPath();
 
     boolean isAddResourceTypeToModuleConfig();
+
+    List<String> getTypesMatch();
+
+    Integer getWidthMatch();
 }
