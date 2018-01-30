@@ -59,7 +59,11 @@ public class ResourceCreator {
             LOG.info("== create formatter config ==");
             createFile(
                     files.getFormatterConfig(),
-                    new FormatterConfigTemplate(cfg.getResourceTypeName(), files.getVfsFormatterPath()),
+                    new FormatterConfigTemplate(
+                            cfg.getResourceTypeName(),
+                            files.getVfsFormatterPath(),
+                            cfg.getTypesMatch(),
+                            cfg.getWidthMatch()),
                     ResourceType.FORMATTER_CONFIG);
 
             // schema
