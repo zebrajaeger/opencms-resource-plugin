@@ -1,4 +1,4 @@
-package de.zebrajaeger.opencms.resourceplugin;
+package de.zebrajaeger.opencms.resourceplugin.manipulator.xml;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -45,6 +45,11 @@ public class XmlManipulator {
         return null;
     }
 
+    protected String findText(String xpath) {
+        Element e = findSingleElement(xpath);
+        return (e == null) ? null : e.getText();
+    }
+
     protected List<Element> findElements(String xpath) {
         List<Element> result = new LinkedList<>();
 
@@ -61,4 +66,5 @@ public class XmlManipulator {
         XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat());
         return xmOut.outputString(doc);
     }
+
 }

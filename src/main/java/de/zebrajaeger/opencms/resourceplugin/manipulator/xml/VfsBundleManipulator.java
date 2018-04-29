@@ -1,4 +1,4 @@
-package de.zebrajaeger.opencms.resourceplugin;
+package de.zebrajaeger.opencms.resourceplugin.manipulator.xml;
 
 import org.jdom2.CDATA;
 import org.jdom2.Document;

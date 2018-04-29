@@ -1,4 +1,4 @@
-package de.zebrajaeger.opencms.resourceplugin;
+package de.zebrajaeger.opencms.resourceplugin.manipulator.xml;
 
 import de.zebrajaeger.opencms.resourceplugin.data.ExplorerType;
 import de.zebrajaeger.opencms.resourceplugin.data.ResourceTypeResourceType;

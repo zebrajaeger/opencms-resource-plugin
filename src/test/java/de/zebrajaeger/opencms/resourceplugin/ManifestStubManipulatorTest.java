@@ -2,6 +2,7 @@ package de.zebrajaeger.opencms.resourceplugin;
 
 import de.zebrajaeger.opencms.resourceplugin.data.ExplorerType;
 import de.zebrajaeger.opencms.resourceplugin.data.ResourceTypeResourceType;
+import de.zebrajaeger.opencms.resourceplugin.manipulator.xml.ManifestStubManipulator;
 import org.jdom2.JDOMException;
 import org.junit.Test;
 

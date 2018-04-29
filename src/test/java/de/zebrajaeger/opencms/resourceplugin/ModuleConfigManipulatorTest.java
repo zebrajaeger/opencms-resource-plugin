@@ -1,6 +1,7 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
 import de.zebrajaeger.opencms.resourceplugin.data.ModuleConfigResourceType;
+import de.zebrajaeger.opencms.resourceplugin.manipulator.xml.ModuleConfigManipulator;
 import org.jdom2.JDOMException;
 import org.junit.Test;
 

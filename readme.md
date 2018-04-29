@@ -136,7 +136,7 @@ used for filenames and for OpenCms recourceType-name.
 * The module config may have more then one language
 ** see de.zebrajaeger.opencms.resourceplugin.ModuleConfigManipulator.add
 * The resourcebundle may have more than one language
-** see de.zebrajaeger.opencms.resourceplugin.VfsBundleManipulator.add
+** see de.zebrajaeger.opencms.resourceplugin.manipulator.XmlManipulator.VfsBundleManipulator.add
 
 ## Use from commandline
 ```

@@ -1,6 +1,10 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
 import de.zebrajaeger.opencms.resourceplugin.data.ModuleConfigResourceType;
+import de.zebrajaeger.opencms.resourceplugin.manipulator.properties.PropertiesFileManipulator;
+import de.zebrajaeger.opencms.resourceplugin.manipulator.xml.ManifestStubManipulator;
+import de.zebrajaeger.opencms.resourceplugin.manipulator.xml.ModuleConfigManipulator;
+import de.zebrajaeger.opencms.resourceplugin.manipulator.xml.VfsBundleManipulator;
 import de.zebrajaeger.opencms.resourceplugin.template.BundleTemplate;
 import de.zebrajaeger.opencms.resourceplugin.template.FileTemplate;
 import de.zebrajaeger.opencms.resourceplugin.template.FileTemplateFactory;
