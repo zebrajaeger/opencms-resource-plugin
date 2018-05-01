@@ -18,6 +18,8 @@ import org.jdom2.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +36,7 @@ public class ResourceCreator {
         String typeName = ResourceUtils.toResourceName(cfg.getResourceTypeName());
 
         try {
-            // before we start with modifications, we check if recource name already in use
+            // before we start with modifications, we check if the resource name already is in use
             ManifestStubManipulator manifestStubManipulator = new ManifestStubManipulator(files.getManifestStub());
             if (manifestStubManipulator.existsRecourceType(typeName)) {
                 throw new ResourceCreatorException("The recourceType '" + typeName + "' already exists");
@@ -96,6 +98,12 @@ public class ResourceCreator {
             // workplace bundle
             LOG.info("== modify workplace bundle ==");
             modifyWorkplaceBundle(cfg, files, typeName);
+
+            //icons
+            if (cfg.getIconSource() != null) {
+                createIcon(cfg.getIconImage(), files.getIcon());
+                createIcon(cfg.getBigIconImage(), files.getBigIcon());
+            }
 
         } catch (FileTemplateFactoryException | JDOMException | IOException e) {
             LOG.error("Error", e);
@@ -200,6 +208,19 @@ public class ResourceCreator {
 
         manifestStubManipulator.addResource(typeName, files.getVfsSchemaPath(), cfg.getIcon(), cfg.getBigicon(), resourceIdValue);
         FileUtils.write(files.getManifestStub(), manifestStubManipulator.toString(), StandardCharsets.UTF_8);
+    }
+
+    private void createIcon(BufferedImage iconImage, FilePair files) throws IOException, FileTemplateFactoryException {
+        ResourceType resourceType = ResourceType.IMAGE;
+
+        LOG.info("  Create files for '{}'", resourceType.getName());
+        FileTemplateFactory factory = new FileTemplateFactory();
+
+        files.getVfs().getParentFile().mkdirs();
+        ImageIO.write(iconImage, "png", files.getVfs());
+
+        files.getManifest().getParentFile().mkdirs();
+        factory.writeToFile(new OcmsFileTemplate(resourceType.getName()), files.getManifest());
     }
 
     private void createFile(FilePair files, FileTemplate template, ResourceType resourceType) throws FileTemplateFactoryException,
