@@ -4,6 +4,8 @@ import de.zebrajaeger.opencms.resourceplugin.ResourceCreator;
 import de.zebrajaeger.opencms.resourceplugin.ResourceCreatorConfig;
 import de.zebrajaeger.opencms.resourceplugin.ResourceCreatorException;
 import de.zebrajaeger.opencms.resourceplugin.namingstrategy.NamingStrategy;
+import de.zebrajaeger.opencms.resourceplugin.util.ImageScaler;
+import de.zebrajaeger.opencms.resourceplugin.util.Slugifier;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -16,9 +18,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -33,7 +40,10 @@ import java.util.regex.Pattern;
 public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(CreateResourceMojo.class);
+    public static final String DEFAULT_ICON_NAME = "plain.png";
+    public static final String DEFAULT_ICON_BIG_NAME = "plain_big.png";
 
+    //<editor-fold desc="Mojo Properties">
     @SuppressWarnings("unused")
     @Parameter(defaultValue = "${project.basedir}/src/main/opencms/manifest", property = "manifestDir", required = true)
     private File manifestDir;
@@ -58,12 +68,20 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     private String resourceId;
 
     @SuppressWarnings("unused")
-    @Parameter(defaultValue = "plain.png", property = "icon", required = true)
+    @Parameter(defaultValue = DEFAULT_ICON_NAME, property = "icon", required = true)
     private String icon;
 
     @SuppressWarnings("unused")
-    @Parameter(defaultValue = "plain_big.png", property = "bigicon", required = true)
+    @Parameter(defaultValue = DEFAULT_ICON_BIG_NAME, property = "bigicon", required = true)
     private String bigicon;
+
+    @SuppressWarnings("unused")
+    @Parameter(property = "iconSource")
+    private String iconSource;
+
+    @SuppressWarnings("unused")
+    @Parameter(defaultValue = "/system/workplace/resources/filetypes/", property = "fileIconVFSPath", required = true)
+    private String fileIconVFSPath;
 
     @SuppressWarnings("unused")
     @Parameter(defaultValue = "${project.artifactId}", property = "moduleName", required = true)
@@ -120,10 +138,14 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
     @SuppressWarnings("unused")
     @Parameter(defaultValue = "width:-1", property = "match", required = true)
     private String match;
+    //</editor-fold>
+
     private List<String> matchTypes;
     private Integer matchWidth;
 
-    @Override
+    private BufferedImage iconImage;
+    private BufferedImage bigIconImage;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         checkAndConvertParameters();
 
@@ -138,6 +160,7 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         }
     }
 
+    //<editor-fold desc="Checks">
     private void checkAndConvertParameters() throws MojoExecutionException {
         checkDirectory(manifestDir, "manifestDir");
         File manifestStub = new File(manifestDir, manifestStubFile);
@@ -146,6 +169,7 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         checkStringNotBlank(newResourceName, "newResourceName");
         checkRecourceNameChars(newResourceName);
         checkResourceId();
+        checkIcon();
 
         resourceTypeSubDirectory = normalizePath(resourceTypeSubDirectory);
 
@@ -280,6 +304,54 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         }
     }
 
+    private void checkIcon() throws MojoExecutionException {
+        if (StringUtils.isBlank(iconSource)) {
+            iconSource = null; // if it is just blank
+
+            if (StringUtils.isBlank(icon)) {
+                String msg = String.format("icon name must not be blank");
+                throw new MojoExecutionException(msg);
+            }
+
+            if (StringUtils.isBlank(bigicon)) {
+                String msg = String.format("bigicon name must not be blank");
+                throw new MojoExecutionException(msg);
+            }
+        } else {
+            // first: iconsource to url
+            URL url;
+            try {
+                File f = new File(iconSource);
+                if (f.exists()) {
+                    url = f.toURI().toURL();
+                } else {
+                    url = new URL(iconSource);
+                }
+            } catch (MalformedURLException e) {
+                String msg = String.format("iconSource '%s' cannot be converted to URL object: '%s'", iconSource, e.getMessage(), e);
+                throw new MojoExecutionException(msg);
+            }
+
+            // second: names from url if icon or bigIcon has its default value
+            if (DEFAULT_ICON_NAME.equals(icon) || DEFAULT_ICON_BIG_NAME.equals(bigicon)) {
+                String name = Slugifier.nameFromUrl(url);
+                String base = FilenameUtils.getBaseName(name);
+                icon = base + ".png";
+                bigicon = base + "-big.png";
+            }
+
+            // third: create imagedata
+            try {
+                BufferedImage src = ImageIO.read(url);
+                iconImage = new ImageScaler().scaleTo(src, 16);
+                bigIconImage = new ImageScaler().scaleTo(src, 24);
+            } catch (IOException e) {
+                String msg = String.format("could not load Image from iconSource '%s': '%s'", iconSource, e.getMessage(), e);
+                throw new MojoExecutionException(msg);
+            }
+        }
+    }
+
     private void checkStringNotBlank(String value, String name) throws MojoExecutionException {
         if (StringUtils.isBlank(value)) {
             String msg = String.format("'%s' variable cannot be blank", name);
@@ -311,13 +383,12 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
             throw new MojoExecutionException(msg);
         }
     }
+    //</editor-fold>
 
-    @Override
     public String getResourceSchemaName() {
         return schemaTypeNamingStrategy.getConvertedName();
     }
 
-    @Override
     public String getResourceTypeName() {
         return resourceTypeNamingStrategy.getConvertedName();
     }
@@ -343,6 +414,10 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         return resourceId;
     }
 
+    public String getIconSource() {
+        return iconSource;
+    }
+
     public String getIcon() {
         return icon;
     }
@@ -351,8 +426,20 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         return bigicon;
     }
 
+    public BufferedImage getIconImage() {
+        return iconImage;
+    }
+
+    public BufferedImage getBigIconImage() {
+        return bigIconImage;
+    }
+
     public String getModuleName() {
         return moduleName;
+    }
+
+    public String getFileIconVFSPath() {
+        return fileIconVFSPath;
     }
 
     public Layout getLayout() {
@@ -367,7 +454,6 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         return workplaceBundlePath;
     }
 
-    @Override
     public String getWorkplacePropertiesPath() {
         return workplacePropertiesPath;
     }
@@ -376,12 +462,10 @@ public class CreateResourceMojo extends AbstractMojo implements ResourceCreatorC
         return addResourceTypeToModuleConfig;
     }
 
-    @Override
     public List<String> getTypesMatch() {
         return matchTypes;
     }
 
-    @Override
     public Integer getWidthMatch() {
         return matchWidth;
     }

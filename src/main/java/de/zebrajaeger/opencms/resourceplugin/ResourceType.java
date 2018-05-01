@@ -9,7 +9,8 @@ public enum ResourceType {
     XMLVFSBUNDLE("xmlvfsbundle"),
     FORMATTER_CONFIG("formatter_config"),
     MODULE_CONFIG("module_config"),
-    FOLDER("folder");
+    FOLDER("folder"),
+    IMAGE("image");
 
     ResourceType(String name) {
         this.name = name;

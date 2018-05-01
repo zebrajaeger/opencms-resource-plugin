@@ -1,7 +1,6 @@
 package de.zebrajaeger.opencms.resourceplugin.template;
 
 import org.apache.commons.beanutils.BeanUtilsBean2;
-import org.apache.commons.beanutils.Converter;
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;

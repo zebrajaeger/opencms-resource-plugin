@@ -1,5 +1,6 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
@@ -26,6 +27,14 @@ public interface ResourceCreatorConfig {
     String getIcon();
 
     String getBigicon();
+
+    BufferedImage getIconImage();
+
+    BufferedImage getBigIconImage();
+
+    String getIconSource();
+
+    String getFileIconVFSPath();
 
     String getModuleName();
 

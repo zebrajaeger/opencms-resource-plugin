@@ -3,7 +3,7 @@ package de.zebrajaeger.opencms.resourceplugin;
 /**
  * Created by lars on 12.02.2017.
  */
-public class ResourceCreatorException extends Exception{
+public class ResourceCreatorException extends Exception {
     public ResourceCreatorException() {
     }
 

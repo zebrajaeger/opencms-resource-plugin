@@ -3,6 +3,56 @@
 Scaffolding plugin for an easy way to add a new resourceType to your OpenCms project that uses 
 [the mediaworx berlin AG openCms Plugin for Maven](http://opencms.mediaworx.com/de/opencms-tools/).   
 
+## Use from commandline
+Simplest way
+```
+mvn de.zebrajaeger:opencms-resource-plugin:createResource \
+-DnewResourceName=abc
+```
+
+With custom icon
+```
+mvn de.zebrajaeger:opencms-resource-plugin:createResource \
+-DnewResourceName=abc \
+-DiconSource=https://assets-cdn.github.com/images/modules/logos_page/Octocat.png
+```
+Create multible resourceTypes at once:   
+```
+mvn de.zebrajaeger:opencms-resource-plugin:createResource \
+-DnewResourceName=abc,def
+```
+
+## Add as profile to project
+add to pom.xml
+```xml
+<project>
+<!-- ... -->
+<profiles>
+    <profile>
+        <id>createResource</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>de.zebrajaeger</groupId>
+                    <artifactId>opencms-resource-plugin</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>createResource</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </build>
+    </profile>
+
+</profiles>
+<!-- ... -->
+</project>
+```
 ## Configuration options
 
 ### Parameter "manifestDir"   
@@ -23,14 +73,14 @@ Scaffolding plugin for an easy way to add a new resourceType to your OpenCms pro
 * Type: java.io.File   
 * Description: Path to vfs root directory.
 
-### Parameter"newResourceName"  
+### Parameter "newResourceName"  
 * Default value: no default value   
 * Required: true   
 * Type: java.lang.String   
 * Description: The name of the new resourceType. Multible values are supported as a comma-separated list of resource-type-names. 
 In this case the 'resourceId'-variable should be 'auto'.
 
-### Parameter"resourceId"  
+### Parameter "resourceId"  
 * Default value: "auto"   
 * Required: true   
 * Type: java.lang.String   
@@ -38,21 +88,30 @@ In this case the 'resourceId'-variable should be 'auto'.
 * Description: The id of the new resourceType. "Auto" looks for other resources in the manifest_Stub file 
 and takes the highest resourceId +1 for the new resourceId.  
 
-### Parameter"icon"  
+### Parameter "iconSource"  
+* Default value: null   
+* Required: false   
+* Type: java.lang.String 
+* Possible values: java.lang.URL od path to file
+  * Supported URL protocols: http, https, ftp(java 7), file, jar   
+* Description: Path to the resource image 
+  * if icon or iconBig has its default value, these values ar generated from iconSource filename 
+
+### Parameter "icon"  
 * Default value: "plain.png"   
 * Required: true   
 * Type: java.lang.String   
 * Description: The small icon for the new resourceType. 
 These icons resides in vfs path "/system/workplace/resources/filetypes/".
 
-### Parameter"bigicon"  
+### Parameter "bigicon"  
 * Default value: "plain_big.png"   
 * Required: true   
 * Type: java.lang.String   
 * Description: The big icon for the new resourceType. 
 These icons resides in vfs path "/system/workplace/resources/filetypes/".
 
-### Parameter: "moduleName"  
+### Parameter "moduleName"  
 * Default value: "${project.artifactId}"   
 * Required: true   
 * Description: The name of the OpenCms Module. With this value generates the plugin the path 
@@ -138,48 +197,7 @@ used for filenames and for OpenCms recourceType-name.
 * The resourcebundle may have more than one language
 ** see de.zebrajaeger.opencms.resourceplugin.VfsBundleManipulator.add
 
-## Use from commandline
-```
-mvn de.zebrajaeger:opencms-resource-plugin:createResource -DnewResourceName=abc
-```
-Create multible resourceTypes at once:   
-```
-mvn de.zebrajaeger:opencms-resource-plugin:createResource -DnewResourceName=abc,def
-```
-
-## Add as profile to project
-add to pom.xml
-```xml
-<project>
-<!-- ... -->
-<profiles>
-    <profile>
-        <id>createResource</id>
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>de.zebrajaeger</groupId>
-                    <artifactId>opencms-resource-plugin</artifactId>
-                    <version>1.0-SNAPSHOT</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>createResource</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-            </plugins>
-        </build>
-    </profile>
-
-</profiles>
-<!-- ... -->
-</project>
-```
 ## Development
-
 For fast building without building javadoc, sources, signing and all the 
 deployment stuff execute
 ```

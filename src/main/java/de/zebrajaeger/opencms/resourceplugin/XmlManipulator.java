@@ -58,7 +58,9 @@ public class XmlManipulator {
 
     @Override
     public String toString() {
-        XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat());
+        Format prettyFormat = Format.getPrettyFormat();
+        prettyFormat.setIndent("    ");
+        XMLOutputter xmOut = new XMLOutputter(prettyFormat);
         return xmOut.outputString(doc);
     }
 }
