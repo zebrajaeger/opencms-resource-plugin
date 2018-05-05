@@ -77,7 +77,7 @@ public class ManifestStubManipulatorTest {
     @Test
     public void testAddString() throws JDOMException, IOException {
         ManifestStubManipulator manipulator = createManipulator();
-        manipulator.addResource("meep", "/fo/bar/meep.xsd", 100000);
+        manipulator.addResourceType("meep", "/fo/bar/meep.xsd", 100000);
         System.out.println(manipulator.toString());
     }
     */

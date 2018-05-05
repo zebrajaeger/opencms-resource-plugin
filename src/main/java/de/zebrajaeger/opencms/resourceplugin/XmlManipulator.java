@@ -1,5 +1,6 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
+import org.apache.commons.io.FileUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -12,6 +13,7 @@ import org.jdom2.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,5 +64,9 @@ public class XmlManipulator {
         prettyFormat.setIndent("    ");
         XMLOutputter xmOut = new XMLOutputter(prettyFormat);
         return xmOut.outputString(doc);
+    }
+
+    public void writeToFile(File target) throws IOException {
+        FileUtils.write(target, toString(), StandardCharsets.UTF_8);
     }
 }

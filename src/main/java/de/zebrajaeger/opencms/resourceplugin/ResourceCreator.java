@@ -13,7 +13,6 @@ import de.zebrajaeger.opencms.resourceplugin.template.OcmsFolderTemplate;
 import de.zebrajaeger.opencms.resourceplugin.template.SchemaTemplate;
 import de.zebrajaeger.opencms.resourceplugin.template.WorkplaceBundleTemplate;
 import de.zebrajaeger.opencms.resourceplugin.util.ResourceUtils;
-import org.apache.commons.io.FileUtils;
 import org.jdom2.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Created by lars on 11.02.2017.
@@ -32,12 +30,12 @@ public class ResourceCreator {
     private static final Logger LOG = LoggerFactory.getLogger(ResourceCreator.class);
 
     public void createResource(ResourceCreatorConfig cfg) throws ResourceCreatorException {
-        FileLayout files = FileLayout.of(cfg);
+        FileLayout fileLayout = FileLayout.of(cfg);
         String typeName = ResourceUtils.toResourceName(cfg.getResourceTypeName());
 
         try {
             // before we start with modifications, we check if the resource name already is in use
-            ManifestStubManipulator manifestStubManipulator = new ManifestStubManipulator(files.getManifestStub());
+            ManifestStubManipulator manifestStubManipulator = new ManifestStubManipulator(fileLayout.getManifestStub());
             if (manifestStubManipulator.existsRecourceType(typeName)) {
                 throw new ResourceCreatorException("The recourceType '" + typeName + "' already exists");
             }
@@ -46,24 +44,24 @@ public class ResourceCreator {
 
             // directories within module
             LOG.info("== create directories ==");
-            for (FilePair p : files.getDirectories()) {
+            for (FilePair p : fileLayout.getDirectories()) {
                 createDirectory(p);
             }
 
             // formatter
             LOG.info("== create formatter ==");
             createFile(
-                    files.getFormatter(),
+                    fileLayout.getFormatter(),
                     new FormatterTemplate(cfg.getResourceTypeName()),
                     ResourceType.JSP);
 
             // formatter config
             LOG.info("== create formatter config ==");
             createFile(
-                    files.getFormatterConfig(),
+                    fileLayout.getFormatterConfig(),
                     new FormatterConfigTemplate(
                             cfg.getResourceTypeName(),
-                            files.getVfsFormatterPath(),
+                            fileLayout.getVfsFormatterPath(),
                             cfg.getTypesMatch(),
                             cfg.getWidthMatch()),
                     ResourceType.FORMATTER_CONFIG);
@@ -72,37 +70,37 @@ public class ResourceCreator {
             LOG.info("== create schema ==");
             String bundleName = cfg.getModuleName() + "." + typeName;
             createFile(
-                    files.getSchema(),
+                    fileLayout.getSchema(),
                     new SchemaTemplate(cfg.getResourceSchemaName(), bundleName),
                     ResourceType.PLAIN);
 
             // bundles
             LOG.info("== create resource bundle ==");
             createFile(
-                    files.getResourceBundle(),
+                    fileLayout.getResourceBundle(),
                     new BundleTemplate(cfg.getResourceSchemaName()),
                     ResourceType.XMLVFSBUNDLE);
 
             // manifest Stub
             LOG.info("== modify manifest_stub ==");
-            modifyManifestStub(cfg, files, typeName);
+            modifyManifestStub(cfg, fileLayout, typeName);
 
             // module config
             LOG.info("== modify module config== ");
             if (cfg.isAddResourceTypeToModuleConfig()) {
-                modifyModuleConfig(files, typeName);
+                modifyModuleConfig(fileLayout, typeName);
             } else {
                 LOG.info("  module config modification not required");
             }
 
             // workplace bundle
             LOG.info("== modify workplace bundle ==");
-            modifyWorkplaceBundle(cfg, files, typeName);
+            modifyWorkplaceBundle(cfg, fileLayout, typeName);
 
             //icons
             if (cfg.getIconSource() != null) {
-                createIcon(cfg.getIconImage(), files.getIcon());
-                createIcon(cfg.getBigIconImage(), files.getBigIcon());
+                createIcon(fileLayout, cfg.getIconImage(), fileLayout.getIcon(), cfg.getFileIconVFSPath() + cfg.getIcon());
+                createIcon(fileLayout, cfg.getBigIconImage(), fileLayout.getBigIcon(), cfg.getFileIconVFSPath() + cfg.getBigicon());
             }
 
         } catch (FileTemplateFactoryException | JDOMException | IOException e) {
@@ -113,27 +111,27 @@ public class ResourceCreator {
 
     private void modifyWorkplaceBundle(
             ResourceCreatorConfig cfg,
-            FileLayout files,
+            FileLayout fileLayout,
             String typeName) throws FileTemplateFactoryException,
             IOException, JDOMException {
 
         // exists vfsbundle?
-        boolean useVfsBundle = files.getWorkplaceBundle().getVfs().exists();
+        boolean useVfsBundle = fileLayout.getWorkplaceBundle().getVfs().exists();
         if (useVfsBundle) {
-            LOG.info("  Found VFSBundle -> so we use it ('{}')", files.getWorkplaceBundle().getVfs().getAbsolutePath());
+            LOG.info("  Found VFSBundle -> so we use it ('{}')", fileLayout.getWorkplaceBundle().getVfs().getAbsolutePath());
         } else {
-            LOG.info("  VFSBundle not found ('{}')", files.getWorkplaceBundle().getVfs().getAbsolutePath());
+            LOG.info("  VFSBundle not found ('{}')", fileLayout.getWorkplaceBundle().getVfs().getAbsolutePath());
         }
 
         // no. exists workplace.properties? no -> create and use vfsbundle
 
         if (!useVfsBundle) {
-            if (files.getWorkplaceProperties().exists()) {
+            if (fileLayout.getWorkplaceProperties().exists()) {
                 LOG.info("  Found workplace.properties -> so we use it");
             } else {
-                LOG.info("  workplace.properties does not exist '{}'", files.getWorkplaceProperties().getAbsolutePath());
+                LOG.info("  workplace.properties does not exist '{}'", fileLayout.getWorkplaceProperties().getAbsolutePath());
                 LOG.info("    -> Create and use VFSBundle bundle");
-                createFile(files.getWorkplaceBundle(), new WorkplaceBundleTemplate(typeName), ResourceType.XMLVFSBUNDLE);
+                createFile(fileLayout.getWorkplaceBundle(), new WorkplaceBundleTemplate(typeName), ResourceType.XMLVFSBUNDLE);
                 useVfsBundle = true;
             }
         }
@@ -144,19 +142,19 @@ public class ResourceCreator {
             LOG.info("    Add desc: '{}'", typeName);
             LOG.info("    Add title: '{}'", typeName);
 
-            VfsBundleManipulator vfsBundleManipulator = new VfsBundleManipulator(files.getWorkplaceBundle().getVfs());
+            VfsBundleManipulator vfsBundleManipulator = new VfsBundleManipulator(fileLayout.getWorkplaceBundle().getVfs());
 
             vfsBundleManipulator.add("fileicon." + typeName, cfg.getResourceSchemaName());
             vfsBundleManipulator.add("desc." + typeName, typeName);
             vfsBundleManipulator.add("title." + typeName, typeName);
 
-            FileUtils.write(files.getWorkplaceBundle().getVfs(), vfsBundleManipulator.toString(), StandardCharsets.UTF_8);
+            vfsBundleManipulator.writeToFile(fileLayout.getWorkplaceBundle().getVfs());
         } else {
             LOG.info("  Add new resourceType to workplace-properties");
             LOG.info("    Add fileicon: '{}'", typeName);
             LOG.info("    Add desc: '{}'", typeName);
             LOG.info("    Add title: '{}'", typeName);
-            PropertiesFileManipulator pfm = new PropertiesFileManipulator(files.getWorkplaceProperties());
+            PropertiesFileManipulator pfm = new PropertiesFileManipulator(fileLayout.getWorkplaceProperties());
 
             pfm.addEmptyLine();
             pfm.addComment(typeName);
@@ -168,25 +166,25 @@ public class ResourceCreator {
         }
     }
 
-    private void modifyModuleConfig(FileLayout files, String typeName) throws FileTemplateFactoryException, IOException, JDOMException {
-        if (!files.getModuleConfig().getVfs().exists()) {
+    private void modifyModuleConfig(FileLayout fileLayout, String typeName) throws FileTemplateFactoryException, IOException, JDOMException {
+        if (!fileLayout.getModuleConfig().getVfs().exists()) {
             LOG.debug("   Module config file does not exist -> create");
             createFile(
-                    files.getModuleConfig(),
+                    fileLayout.getModuleConfig(),
                     new ModuleConfigTemplate(),
                     ResourceType.MODULE_CONFIG);
         }
 
         LOG.info("   Add new resourceType to module config file");
 
-        ModuleConfigManipulator moduleConfigManipulator = new ModuleConfigManipulator(files.getModuleConfig().getVfs());
+        ModuleConfigManipulator moduleConfigManipulator = new ModuleConfigManipulator(fileLayout.getModuleConfig().getVfs());
         moduleConfigManipulator.add(ModuleConfigResourceType.of(typeName));
-        FileUtils.write(files.getModuleConfig().getVfs(), moduleConfigManipulator.toString(), StandardCharsets.UTF_8);
+        moduleConfigManipulator.writeToFile(fileLayout.getModuleConfig().getVfs());
     }
 
-    private void modifyManifestStub(ResourceCreatorConfig cfg, FileLayout files, String typeName) throws JDOMException, IOException,
+    private void modifyManifestStub(ResourceCreatorConfig cfg, FileLayout fileLayout, String typeName) throws JDOMException, IOException,
             ResourceCreatorException {
-        ManifestStubManipulator manifestStubManipulator = new ManifestStubManipulator(files.getManifestStub());
+        ManifestStubManipulator manifestStubManipulator = new ManifestStubManipulator(fileLayout.getManifestStub());
 
         String resourceId = cfg.getResourceId();
         Long resourceIdValue;
@@ -206,11 +204,14 @@ public class ResourceCreator {
             LOG.info("  Choose minimum resourceID for new resource: '{}'", resourceIdValue);
         }
 
-        manifestStubManipulator.addResource(typeName, files.getVfsSchemaPath(), cfg.getIcon(), cfg.getBigicon(), resourceIdValue);
-        FileUtils.write(files.getManifestStub(), manifestStubManipulator.toString(), StandardCharsets.UTF_8);
+        manifestStubManipulator.addResourceType(typeName, fileLayout.getVfsSchemaPath(), cfg.getIcon(), cfg.getBigicon(), resourceIdValue);
+        manifestStubManipulator.writeToFile(fileLayout.getManifestStub());
     }
 
-    private void createIcon(BufferedImage iconImage, FilePair files) throws IOException, FileTemplateFactoryException {
+    private void createIcon(FileLayout fileLayout,
+                            BufferedImage iconImage,
+                            FilePair files,
+                            String vfsPath) throws IOException, FileTemplateFactoryException, JDOMException {
         ResourceType resourceType = ResourceType.IMAGE;
 
         LOG.info("  Create files for '{}'", resourceType.getName());
@@ -221,6 +222,10 @@ public class ResourceCreator {
 
         files.getManifest().getParentFile().mkdirs();
         factory.writeToFile(new OcmsFileTemplate(resourceType.getName()), files.getManifest());
+
+        ManifestStubManipulator manifestStubManipulator = new ManifestStubManipulator(fileLayout.getManifestStub());
+        manifestStubManipulator.addResource(vfsPath);
+        manifestStubManipulator.writeToFile(fileLayout.getManifestStub());
     }
 
     private void createFile(FilePair files, FileTemplate template, ResourceType resourceType) throws FileTemplateFactoryException,

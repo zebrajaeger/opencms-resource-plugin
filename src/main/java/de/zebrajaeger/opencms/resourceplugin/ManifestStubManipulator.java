@@ -1,6 +1,7 @@
 package de.zebrajaeger.opencms.resourceplugin;
 
 import de.zebrajaeger.opencms.resourceplugin.data.ExplorerType;
+import de.zebrajaeger.opencms.resourceplugin.data.ManifestStubResource;
 import de.zebrajaeger.opencms.resourceplugin.data.ResourceTypeResourceType;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -58,6 +59,13 @@ public class ManifestStubManipulator extends XmlManipulator {
         return result;
     }
 
+    private Element add(ManifestStubResource resource) {
+        Element result = resource.toXml();
+        Element e = findSingleElement("/export/module/resources");
+        e.addContent(result);
+        return result;
+    }
+
     public Long getHighestResourceId() {
         Long result = null;
 
@@ -89,9 +97,14 @@ public class ManifestStubManipulator extends XmlManipulator {
         return false;
     }
 
-    public void addResource(String name, String vfsXsdPath, String icon, String bigIcon, long id) {
-        LOG.info("  Add resource to manifest_stub with name:'{}' id:'{}'", name, id);
+    public void addResourceType(String name, String vfsXsdPath, String icon, String bigIcon, long id) {
+        LOG.info("  Add resource-type to manifest_stub with name:'{}' id:'{}'", name, id);
         add(ResourceTypeResourceType.of(name, id, vfsXsdPath));
         add(ExplorerType.of(name, icon, bigIcon));
+    }
+
+    public void addResource(String uri) {
+        LOG.info("  Add resource to manifest_stub with uri:'{}' ", uri);
+        add(ManifestStubResource.of(uri));
     }
 }
